@@ -1,7 +1,9 @@
-import Image from "next/image";
+import Section from "@/components/section";
 
 export default function Home() {
   return (
-    <div className="min-h-screen">HOME</div>
+    <Section title="近くのお店">
+      <div>scroll_area</div>
+    </Section>
   );
 }
