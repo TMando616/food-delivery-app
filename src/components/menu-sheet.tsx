@@ -1,21 +1,34 @@
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
 } from "@/components/ui/sheet"
 import { Bookmark, Heart, Menu } from "lucide-react"
 import { Button } from "./ui/button"
 import Link from "next/link"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { createClient } from "@/utils/supabase/server"
+import { redirect } from "next/navigation"
+import { logout } from "@/app/(auth)/login/actions"
 
-export default function MenuSheet() {
+export default async function MenuSheet() {
+
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+        redirect("/login")
+    }
+    const {avatar_url, full_name } = user.user_metadata
+
+
     return (
         <Sheet>
-            <SheetTrigger>
+            <SheetTrigger asChild>
                 <Button variant={"ghost"} size={"icon"}>
                     <Menu />
                 </Button>
@@ -31,11 +44,11 @@ export default function MenuSheet() {
                 {/* ユーザー情報エリア */}
                 <div className="flex items-center gap-5">
                     <Avatar>
-                        <AvatarImage src="https://github.com/shadcn.png" />
-                        <AvatarFallback>ユーザー名</AvatarFallback>
+                        <AvatarImage src={avatar_url} />
+                        <AvatarFallback>{full_name}</AvatarFallback>
                     </Avatar>
                     <div>
-                        <div className="font-bold">ユーザー名</div>
+                        <div className="font-bold">{full_name}</div>
                         <div>
                             <Link href={"#"} className="text-green-500 text-xs">アカウントを管理する</Link>
                         </div>
@@ -57,7 +70,9 @@ export default function MenuSheet() {
                         </Link>
                     </li>
                     <SheetFooter>
-                        <Button>ログアウト</Button>
+                        <form>
+                            <Button className="w-full" formAction={logout}>ログアウト</Button>
+                        </form>
                     </SheetFooter>
                 </ul>
 
