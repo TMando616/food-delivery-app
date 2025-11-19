@@ -9,7 +9,7 @@ interface SectionProps {
 export default function Section({children, title}: SectionProps) {
     return (
         <section>
-            <div className="flex items-center justify-between py-4">
+            <div className="flex items-center justify-between py-3">
                 <h2 className="text-2xl font-bold">{title}</h2>
                 <TextToggleButton />
             </div>
