@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   logging: {
     fetches: { fullUrl: true },
   },
+  experimental: {
+    useCache: true,
+  },
 };
 
 export default nextConfig;

@@ -50,6 +50,15 @@ export async function fetchRamenRestaurants() {
     
     const nearbyRamenPlaces = data.places 
 
-    transformPlaceResults(nearbyRamenPlaces)
+    const RamenRestaurant = await transformPlaceResults(nearbyRamenPlaces)
+    console.log(RamenRestaurant)
 
+}
+
+export async function getPhotoUrl(name: string, maxWidth = 400) { // use cacheを使用するためにasync
+    "use cache"; // 引数が同一であれば2回目以降はキャッシュで同じ値を返却する
+    console.log("getPhotoUrl実行")
+    const apiKey = process.env.GOOGLE_API_KEY
+    const url = `https://places.googleapis.com/v1/${name}/media?key=${apiKey}&maxWidthPx=${maxWidth}`
+    return url
 }
