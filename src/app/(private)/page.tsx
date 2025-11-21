@@ -4,14 +4,23 @@ import Section from "@/components/section";
 import { fetchRamenRestaurants } from "@/lib/restaurants/api";
 
 export default async function Home() {
-  await fetchRamenRestaurants();
+  const { data:neaybRamenRestaurants , error } = await fetchRamenRestaurants();
+
   return (
-    <Section title="近くのお店">
-      <CarouselContainer slideToShow={4}>
-        {Array.from({ length: 10 }).map((_, index) => (
-          <RestaurantCard key={index} />
-        ))}
-      </CarouselContainer>
-    </Section>
+    <>
+      {!neaybRamenRestaurants ? (
+        <p>{error}</p>
+      ) : neaybRamenRestaurants.length > 0 ? (
+        <Section title="近くのお店">
+          <CarouselContainer slideToShow={4}>
+            {neaybRamenRestaurants.map((restaurant, index) => (
+              <RestaurantCard key={index} restaurant={restaurant} />
+            ))}
+          </CarouselContainer>
+        </Section>
+      ) : (
+        <p>近くにラーメン店がありません。</p>
+      )}
+    </>
   );
 }

@@ -51,7 +51,8 @@ export async function fetchRamenRestaurants() {
     const nearbyRamenPlaces = data.places 
 
     const RamenRestaurant = await transformPlaceResults(nearbyRamenPlaces)
-    console.log(RamenRestaurant)
+
+    return { data: RamenRestaurant }
 
 }
 
