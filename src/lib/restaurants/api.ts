@@ -70,7 +70,7 @@ export async function fetchRestaurants() {
     const matchingPlace = nearbyPlaces.filter((place) => place.primaryType && desiredTypes.includes(place.primaryType))
 
     const Restaurants = await transformPlaceResults(matchingPlace)
-    console.log(Restaurants)
+    // console.log(Restaurants)
 
     return { data: Restaurants }
 

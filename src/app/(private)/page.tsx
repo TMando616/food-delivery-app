@@ -1,4 +1,5 @@
 import CarouselContainer from "@/components/carousel-container";
+import Categories from "@/components/categories";
 import RestaurantCard from "@/components/restaurant-card";
 import RestaurantList from "@/components/restaurant-list";
 import Section from "@/components/section";
@@ -10,6 +11,8 @@ export default async function Home() {
 
   return (
     <>
+    <Categories />
+
     {/* レストラン情報 */}
       {!nearbyRestaurants ? (
         <p>{nearbyRestaurantError}</p>
