@@ -1,20 +1,22 @@
 import CarouselContainer from "@/components/carousel-container";
 import RestaurantCard from "@/components/restaurant-card";
+import RestaurantList from "@/components/restaurant-list";
 import Section from "@/components/section";
 import { fetchRamenRestaurants, fetchRestaurants } from "@/lib/restaurants/api";
 
 export default async function Home() {
-  const { data:neaybyRamenRestaurants , error: nearbyRamenRestaurantError } = await fetchRamenRestaurants();
-  const { data:neaybyRestaurants , error: nearbyRestaurantError } = await fetchRestaurants();
+  const { data:nearbyRamenRestaurants , error: nearbyRamenRestaurantError } = await fetchRamenRestaurants();
+  const { data:nearbyRestaurants , error: nearbyRestaurantError } = await fetchRestaurants();
 
   return (
     <>
-      {!neaybyRestaurants ? (
+    {/* レストラン情報 */}
+      {!nearbyRestaurants ? (
         <p>{nearbyRestaurantError}</p>
-      ) : neaybyRestaurants.length > 0 ? (
-        <Section title="近くのレストラン">
+      ) : nearbyRestaurants.length > 0 ? (
+        <Section title="近くのレストラン" expandedContent={<RestaurantList restaurants={nearbyRestaurants}/>}>
           <CarouselContainer slideToShow={4}>
-            {neaybyRestaurants.map((restaurant, index) => (
+            {nearbyRestaurants.map((restaurant, index) => (
               <RestaurantCard key={index} restaurant={restaurant} />
             ))}
           </CarouselContainer>
@@ -23,12 +25,13 @@ export default async function Home() {
         <p>近くにレストランがありません。</p>
       )}
 
-      {!neaybyRamenRestaurants ? (
+    {/* ラーメン店情報 */}
+      {!nearbyRamenRestaurants ? (
         <p>{nearbyRamenRestaurantError}</p>
-      ) : neaybyRamenRestaurants.length > 0 ? (
-        <Section title="近くのラーメン店">
+      ) : nearbyRamenRestaurants.length > 0 ? (
+        <Section title="近くのラーメン店"  expandedContent={<RestaurantList  restaurants={nearbyRamenRestaurants}/>}>
           <CarouselContainer slideToShow={4}>
-            {neaybyRamenRestaurants.map((restaurant, index) => (
+            {nearbyRamenRestaurants.map((restaurant, index) => (
               <RestaurantCard key={index} restaurant={restaurant} />
             ))}
           </CarouselContainer>
