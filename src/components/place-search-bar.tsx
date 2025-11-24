@@ -7,31 +7,52 @@ import {
     CommandItem,
     CommandList,
 } from "@/components/ui/command"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function PlaceSearchBar() {
 
     const [open, setOpen] = useState(false);
     const [inputText, setInputText] = useState("")
+
+    const fetchSuggestions = () => {
+        try {
+            
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        if(!inputText.trim()) {
+            setOpen(false) // 要確認：react18からはeffect内でstateを変更する処理はエラーが出るみたい
+            return
+        }
+        setOpen(true)
+        fetchSuggestions();
+    }, [inputText])
+
     const handleBlur = () => {
         setOpen(false)
     }
+
+    const handleFocus = () => {
+        if(inputText){
+            setOpen(true)
+        }
+    }
+
     return (
         <Command className="overflow-visible bg-muted" shouldFilter={false}>
             <CommandInput 
                 value={inputText}
                 placeholder="Type a command or search..."
-                onValueChange={(text) => {
-                    if(!open){
-                        setOpen(true)
-                    }
-                    setInputText(text)
-                }}
+                onValueChange={setInputText}
                 onBlur={handleBlur}
+                onFocus={handleFocus}
             />
             {open && (
                 <div className="relative">
-                    <CommandList className="absolute bg-background w-full">
+                    <CommandList className="absolute bg-background w-full shadow-md rounded-lg">
                         <CommandEmpty>No results found.</CommandEmpty>
                         <CommandItem>Calendar</CommandItem>
                         <CommandItem>Search Emoji</CommandItem>
