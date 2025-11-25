@@ -8,19 +8,25 @@ import {
     CommandList,
 } from "@/components/ui/command"
 import { useEffect, useState } from "react";
+import { useDebouncedCallback } from 'use-debounce';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function PlaceSearchBar() {
 
     const [open, setOpen] = useState(false);
     const [inputText, setInputText] = useState("")
+    const [sessionToken, setSessionToken] = useState(uuidv4())
 
-    const fetchSuggestions = () => {
+    const fetchSuggestions = useDebouncedCallback(async (input: string) => {
+        console.log(input)
         try {
-            
+            const response = await fetch(
+                `/api/restaurant/autocomplete?input=${input}&sessionToken=${sessionToken}`
+            )
         } catch (error) {
             console.log(error)
         }
-    }
+    }, 500); 
 
     useEffect(() => {
         if(!inputText.trim()) {
@@ -28,7 +34,7 @@ export default function PlaceSearchBar() {
             return
         }
         setOpen(true)
-        fetchSuggestions();
+        fetchSuggestions(inputText);
     }, [inputText])
 
     const handleBlur = () => {
