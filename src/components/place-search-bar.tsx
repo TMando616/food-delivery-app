@@ -7,6 +7,8 @@ import {
     CommandItem,
     CommandList,
 } from "@/components/ui/command"
+import { RestaurantSuggestion } from "@/types";
+import { MapPin, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDebouncedCallback } from 'use-debounce';
 import { v4 as uuidv4 } from 'uuid';
@@ -16,13 +18,19 @@ export default function PlaceSearchBar() {
     const [open, setOpen] = useState(false);
     const [inputText, setInputText] = useState("")
     const [sessionToken, setSessionToken] = useState(uuidv4())
+    const [suggestions, setSuggestions] = useState<RestaurantSuggestion[]>([])
 
     const fetchSuggestions = useDebouncedCallback(async (input: string) => {
-        console.log(input)
+        if(!inputText.trim()) {
+            setSuggestions([])
+            return
+        }
         try {
             const response = await fetch(
                 `/api/restaurant/autocomplete?input=${input}&sessionToken=${sessionToken}`
             )
+            const data:RestaurantSuggestion[] = await response.json();
+            setSuggestions(data)
         } catch (error) {
             console.log(error)
         }
@@ -60,9 +68,16 @@ export default function PlaceSearchBar() {
                 <div className="relative">
                     <CommandList className="absolute bg-background w-full shadow-md rounded-lg">
                         <CommandEmpty>No results found.</CommandEmpty>
-                        <CommandItem>Calendar</CommandItem>
-                        <CommandItem>Search Emoji</CommandItem>
-                        <CommandItem>Calculator</CommandItem>
+                        {suggestions.map((suggestion, index) => (
+                            <CommandItem 
+                                key={suggestion.placeId ?? index} 
+                                value={suggestion.placeName}
+                                className="p-5"
+                            >
+                                {suggestion.type === "queryPrediction" ? <Search /> : <MapPin />}
+                                <p>{suggestion.placeName}</p>
+                            </CommandItem>
+                        ))}
                     </CommandList>
                 </div>
             )}
