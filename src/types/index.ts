@@ -22,3 +22,24 @@ export interface PlaceSearchResult {
 export interface PlacePhoto {
     name?: string,
 }
+
+export interface GooglePlacesAutoCompleteApiResponse {
+    suggestions?: PlaceAutoCompleteResult[]
+}
+
+export interface PlaceAutoCompleteResult {
+    placePrediction?: {
+        place?: string,
+        placeId?: string,
+        structuredFormat?: {
+            mainText?: {
+                text?: string,
+            }
+        }
+    },
+    queryPrediction?: {
+        text?: {
+            text?: string,
+        }
+    }
+}

@@ -1,3 +1,4 @@
+import { GooglePlacesAutoCompleteApiResponse } from "@/types"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function GET(request: NextRequest) {
@@ -28,6 +29,7 @@ export async function GET(request: NextRequest) {
         }
 
         const requestBody = {
+            includeQueryPredictions: true, // キーワードの情報
             input: input,
             sessionToken: sessionToken,
             includedPrimaryTypes: ["restaurant"],
@@ -41,30 +43,31 @@ export async function GET(request: NextRequest) {
                 }
             },
             languageCode: "ja",
-            includedRegionCodes: ["jp"],
+            // includedRegionCodes: ["jp"],
+            regionCode: "jp",
         };
 
         const response = await fetch(url,{
             method: "post",
             body: JSON.stringify(requestBody),
             headers: header,
-            next: { revalidate: 86400 }, //24時間でキャッシュを更新
         })
 
         if (!response.ok) {
             const errorData = await response.json()
             console.error(errorData)
-            return {error: `NearbySearchリクエスト失敗${response.status}`}
+            return {error: `AutoCompleteリクエスト失敗${response.status}`}
         }
 
-        const data = await response.json()
+        const data: GooglePlacesAutoCompleteApiResponse = await response.json()
 
         console.log(JSON.stringify(data, null, 2))
+        
+        return NextResponse.json('success')
 
     } catch (error) {
         console.log(error)
         return {error: "予期せぬエラーが発生しました"}
     }
 
-    return NextResponse.json('success')
 }
