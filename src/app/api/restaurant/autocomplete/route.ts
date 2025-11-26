@@ -1,4 +1,4 @@
-import { GooglePlacesAutoCompleteApiResponse } from "@/types"
+import { GooglePlacesAutoCompleteApiResponse, RestaurantSuggestion } from "@/types"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function GET(request: NextRequest) {
@@ -60,10 +60,33 @@ export async function GET(request: NextRequest) {
         }
 
         const data: GooglePlacesAutoCompleteApiResponse = await response.json()
-
         console.log(JSON.stringify(data, null, 2))
+
+        const suggestions = data.suggestions ?? []
+
+        const results = suggestions.map((suggestion) => {
+            if(
+                suggestion.placePrediction 
+                && suggestion.placePrediction.placeId 
+                && suggestion.placePrediction.structuredFormat?.mainText?.text
+            ) {
+                return {
+                    type: "placePrediction",
+                    placeId: suggestion.placePrediction.placeId,
+                    placeName: suggestion.placePrediction.structuredFormat?.mainText?.text,
+                }
+            } else if (
+                suggestion.queryPrediction 
+                && suggestion.queryPrediction.text?.text
+            ) {
+                return {
+                    type: "queryPrediction",
+                    placeName: suggestion.queryPrediction.text?.text
+                }
+            }
+        }).filter((suggestion): suggestion is RestaurantSuggestion => suggestion !== undefined)
         
-        return NextResponse.json('success')
+        return NextResponse.json(results)
 
     } catch (error) {
         console.log(error)
