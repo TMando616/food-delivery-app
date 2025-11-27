@@ -8,7 +8,7 @@ import {
     CommandList,
 } from "@/components/ui/command"
 import { RestaurantSuggestion } from "@/types";
-import { MapPin, Search } from "lucide-react";
+import { LoaderCircle, MapPin, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDebouncedCallback } from 'use-debounce';
 import { v4 as uuidv4 } from 'uuid';
@@ -19,6 +19,7 @@ export default function PlaceSearchBar() {
     const [inputText, setInputText] = useState("")
     const [sessionToken, setSessionToken] = useState(uuidv4())
     const [suggestions, setSuggestions] = useState<RestaurantSuggestion[]>([])
+    const [isLoading, setIsLoading] = useState(false)
 
     const fetchSuggestions = useDebouncedCallback(async (input: string) => {
         if(!inputText.trim()) {
@@ -33,6 +34,8 @@ export default function PlaceSearchBar() {
             setSuggestions(data)
         } catch (error) {
             console.log(error)
+        } finally {
+            setIsLoading(false)
         }
     }, 500); 
 
@@ -41,6 +44,7 @@ export default function PlaceSearchBar() {
             setOpen(false) // 要確認：react18からはeffect内でstateを変更する処理はエラーが出るみたい
             return
         }
+        setIsLoading(true)
         setOpen(true)
         fetchSuggestions(inputText);
     }, [inputText])
@@ -67,7 +71,11 @@ export default function PlaceSearchBar() {
             {open && (
                 <div className="relative">
                     <CommandList className="absolute bg-background w-full shadow-md rounded-lg">
-                        <CommandEmpty>No results found.</CommandEmpty>
+                        <CommandEmpty>
+                            <div className="flex items-center justify-center">
+                                {isLoading ? <LoaderCircle className="animate-spin" /> : "レストランが見つかりません"}
+                            </div>
+                        </CommandEmpty>
                         {suggestions.map((suggestion, index) => (
                             <CommandItem 
                                 key={suggestion.placeId ?? index} 
