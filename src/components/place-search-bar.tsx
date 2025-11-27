@@ -8,7 +8,7 @@ import {
     CommandList,
 } from "@/components/ui/command"
 import { RestaurantSuggestion } from "@/types";
-import { LoaderCircle, MapPin, Search } from "lucide-react";
+import { AlertCircle, LoaderCircle, MapPin, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDebouncedCallback } from 'use-debounce';
 import { v4 as uuidv4 } from 'uuid';
@@ -20,20 +20,28 @@ export default function PlaceSearchBar() {
     const [sessionToken, setSessionToken] = useState(uuidv4())
     const [suggestions, setSuggestions] = useState<RestaurantSuggestion[]>([])
     const [isLoading, setIsLoading] = useState(false)
+    const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
     const fetchSuggestions = useDebouncedCallback(async (input: string) => {
-        if(!inputText.trim()) {
+        if(!input.trim()) {
             setSuggestions([])
             return
         }
+        setErrorMessage(null)
         try {
             const response = await fetch(
                 `/api/restaurant/autocomplete?input=${input}&sessionToken=${sessionToken}`
             )
+            if(!response.ok) {
+                const errorData = await response.json()
+                setErrorMessage(errorData.error)
+                return
+            }
             const data:RestaurantSuggestion[] = await response.json();
             setSuggestions(data)
         } catch (error) {
-            console.log(error)
+            console.error(error)
+            setErrorMessage("予期せぬエラーが発生しました")
         } finally {
             setIsLoading(false)
         }
@@ -73,7 +81,17 @@ export default function PlaceSearchBar() {
                     <CommandList className="absolute bg-background w-full shadow-md rounded-lg">
                         <CommandEmpty>
                             <div className="flex items-center justify-center">
-                                {isLoading ? <LoaderCircle className="animate-spin" /> : "レストランが見つかりません"}
+                                {isLoading ? (
+                                    <LoaderCircle className="animate-spin" />
+                                ) : errorMessage ?
+                                (
+                                    <div className="flex items-center text-destructive gap-2">
+                                        <AlertCircle />
+                                        {errorMessage}
+                                    </div>
+                                ) : (
+                                    "レストランが見つかりません"
+                                )}
                             </div>
                         </CommandEmpty>
                         {suggestions.map((suggestion, index) => (
