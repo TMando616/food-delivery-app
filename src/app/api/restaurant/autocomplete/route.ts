@@ -9,10 +9,10 @@ export async function GET(request: NextRequest) {
     console.log(input, sessionToken)
 
     if(!input) {
-        NextResponse.json({ error: "文字を入力してください。" }, { status: 400 })
+        return NextResponse.json({ error: "文字を入力してください。" }, { status: 400 })
     }
     if(!sessionToken) {
-        NextResponse.json(
+        return NextResponse.json(
             { error: "セッショントークンは必須です" }, 
             { status: 400 }
         )
