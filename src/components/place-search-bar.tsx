@@ -80,11 +80,27 @@ export default function PlaceSearchBar() {
             router.push(
                 `/restaurant/${suggestion.placeId}?sessionToken=${sessionToken}`
             )
+        } else {
+            // 検索結果ページに移動
+            router.push(`/search?restaurant=${suggestion.placeName}`)
+        }
+        setOpen(false)
+    }
+
+    const handleKeyDown = (e:React.KeyboardEvent<HTMLDivElement>) => {
+        if(!inputText.trim()) return
+        if(e.key === "Enter") {
+            // 検索結果ページに移動
+            router.push(`/search?restaurant=${inputText}`)
         }
     }
 
     return (
-        <Command className="overflow-visible bg-muted" shouldFilter={false}>
+        <Command 
+            className="overflow-visible bg-muted" 
+            shouldFilter={false}
+            onKeyDown={handleKeyDown}
+        >
             <CommandInput 
                 value={inputText}
                 placeholder="Type a command or search..."
