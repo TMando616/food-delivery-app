@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/command"
 import { RestaurantSuggestion } from "@/types";
 import { AlertCircle, LoaderCircle, MapPin, Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useDebouncedCallback } from 'use-debounce';
 import { v4 as uuidv4 } from 'uuid';
@@ -23,6 +24,7 @@ export default function PlaceSearchBar() {
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
     const clickedOnItem = useRef(false)
+    const router = useRouter()
 
     const fetchSuggestions = useDebouncedCallback(async (input: string) => {
         if(!input.trim()) {
@@ -74,7 +76,11 @@ export default function PlaceSearchBar() {
     }
 
     const handleSelectSuggestion = ( suggestion: RestaurantSuggestion) => {
-        console.log("suggestion", suggestion)
+        if(suggestion.type === "placePrediction") {
+            router.push(
+                `/restaurant/${suggestion.placeId}?sessionToken=${sessionToken}`
+            )
+        }
     }
 
     return (
