@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/command"
 import { RestaurantSuggestion } from "@/types";
 import { AlertCircle, LoaderCircle, MapPin, Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDebouncedCallback } from 'use-debounce';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -21,6 +21,8 @@ export default function PlaceSearchBar() {
     const [suggestions, setSuggestions] = useState<RestaurantSuggestion[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+    const clickedOnItem = useRef(false)
 
     const fetchSuggestions = useDebouncedCallback(async (input: string) => {
         if(!input.trim()) {
@@ -58,6 +60,10 @@ export default function PlaceSearchBar() {
     }, [inputText])
 
     const handleBlur = () => {
+        if(clickedOnItem.current){
+            clickedOnItem.current = false
+            return
+        }
         setOpen(false)
     }
 
@@ -65,6 +71,10 @@ export default function PlaceSearchBar() {
         if(inputText){
             setOpen(true)
         }
+    }
+
+    const handleSelectSuggestion = ( suggestion: RestaurantSuggestion) => {
+        console.log("suggestion", suggestion)
     }
 
     return (
@@ -99,6 +109,8 @@ export default function PlaceSearchBar() {
                                 key={suggestion.placeId ?? index} 
                                 value={suggestion.placeName}
                                 className="p-5"
+                                onSelect={() => handleSelectSuggestion(suggestion)}
+                                onMouseDown={() => clickedOnItem.current = true}
                             >
                                 {suggestion.type === "queryPrediction" ? <Search /> : <MapPin />}
                                 <p>{suggestion.placeName}</p>
