@@ -80,6 +80,7 @@ export default function PlaceSearchBar() {
             router.push(
                 `/restaurant/${suggestion.placeId}?sessionToken=${sessionToken}`
             )
+            setSessionToken(uuidv4())
         } else {
             // 検索結果ページに移動
             router.push(`/search?restaurant=${suggestion.placeName}`)
@@ -92,6 +93,7 @@ export default function PlaceSearchBar() {
         if(e.key === "Enter") {
             // 検索結果ページに移動
             router.push(`/search?restaurant=${inputText}`)
+            setOpen(false)
         }
     }
 
