@@ -22,12 +22,14 @@ import {
 import { useEffect, useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { v4 as uuidv4 } from 'uuid';
+import { AddressSuggestion } from "@/types"
+import { AlertCircle, LoaderCircle, MapPin } from "lucide-react"
 
 export default function AddressModal() {
     
     const [inputText, setInputText] = useState("")
     const [sessionToken, setSessionToken] = useState(uuidv4())
-    const [suggestions, setSuggestions] = useState([])
+    const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -46,8 +48,7 @@ export default function AddressModal() {
                 setErrorMessage(errorData.error)
                 return
             }
-            const data = await response.json();
-            console.log("suggestion", data)
+            const data: AddressSuggestion[] = await response.json();
             setSuggestions(data)
         } catch (error) {
             console.error(error)
@@ -84,10 +85,31 @@ export default function AddressModal() {
                         </div>
                         <CommandList>
                             {inputText ? (
-                                // サジェスチョン
                                 <>
-                                    <CommandEmpty>No Result found.</CommandEmpty>
-                                    <div>サジェスチョン表示</div>
+                                    <CommandEmpty>
+                                        <div className="flex items-center justify-center">
+                                            {isLoading ? (
+                                                <LoaderCircle className="animate-spin" />
+                                            ) : errorMessage ?
+                                            (
+                                                <div className="flex items-center text-destructive gap-2">
+                                                    <AlertCircle />
+                                                    {errorMessage}
+                                                </div>
+                                            ) : (
+                                                "住所が見つかりません"
+                                            )}
+                                        </div>
+                                    </CommandEmpty>
+                                    {suggestions.map((suggestion) => (
+                                        <CommandItem key={suggestion.placeId} className="p-5">
+                                            <MapPin />
+                                            <div>
+                                                <p className="font-bold">{suggestion.placeName}</p>
+                                                <p className="text-muted-foreground">{suggestion.address_text}</p>
+                                            </div>
+                                        </CommandItem>
+                                    ))}
                                 </>
                             ) : (
                                 <>

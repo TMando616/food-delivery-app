@@ -75,7 +75,6 @@ export async function GET(request: NextRequest) {
                 !!suggestion.placeName && 
                 !!suggestion.address_text 
         )
-        console.log(results)
 
         return NextResponse.json(results)
 
