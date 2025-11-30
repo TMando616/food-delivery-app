@@ -251,3 +251,38 @@ export async function getPhotoUrl(name: string, maxWidth = 400) { // use cache�
     const url = `https://places.googleapis.com/v1/${name}/media?key=${apiKey}&maxWidthPx=${maxWidth}`
     return url
 }
+
+export async function getPlaceDetails(placeId: string, fields: string[], sessionToken?: string) {
+    let url:string;
+
+    const fieldsParam = fields.join(",")
+
+    if(sessionToken) {
+        url = `https://places.googleapis.com/v1/places/${placeId}?sessionToken=${sessionToken}&languageCode=ja`
+    } else {
+        url = `https://places.googleapis.com/v1/places/${placeId}?languageCode=ja`
+    }
+    
+    const apiKey = process.env.GOOGLE_API_KEY
+    
+    const header = {
+        "Content-type": "application/json",
+        "X-Goog-Api-Key": apiKey!,
+        "X-Goog-FieldMask": fieldsParam,
+    }
+
+    const response = await fetch(url,{
+        method: "get",
+        headers: header,
+        next: { revalidate: 86400 }, //24時間でキャッシュを更新
+    })
+
+    if (!response.ok) {
+        const errorData = await response.json()
+        console.error(errorData)
+        return {error: `PlaceDetailsリクエスト失敗${response.status}`}
+    }
+
+    const data = await response.json();
+    console.log("PlaceDetailsData",data)
+}
