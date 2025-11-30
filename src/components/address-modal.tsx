@@ -24,6 +24,7 @@ import { useDebouncedCallback } from "use-debounce"
 import { v4 as uuidv4 } from 'uuid';
 import { AddressSuggestion } from "@/types"
 import { AlertCircle, LoaderCircle, MapPin } from "lucide-react"
+import { selectSuggestionAction } from "@/app/(private)/actions/addressActions"
 
 export default function AddressModal() {
     
@@ -66,6 +67,19 @@ export default function AddressModal() {
         fetchSuggestions(inputText);
     }, [inputText])
 
+    const handleSelectSuggestion = async (suggestion: AddressSuggestion) => {
+        
+        try {
+            // serverActions呼び出し
+            await selectSuggestionAction(suggestion, sessionToken)
+            setSessionToken(uuidv4()) // sessionTokenは使いまわせない
+        } catch (error) {
+            console.log(error)
+            alert("予期せぬエラーが発生しました")
+        }
+
+    }
+
     return (
         <div>
             <Dialog>
@@ -102,7 +116,11 @@ export default function AddressModal() {
                                         </div>
                                     </CommandEmpty>
                                     {suggestions.map((suggestion) => (
-                                        <CommandItem key={suggestion.placeId} className="p-5">
+                                        <CommandItem 
+                                            onSelect={() => handleSelectSuggestion(suggestion)}
+                                            key={suggestion.placeId} 
+                                            className="p-5"
+                                        >
                                             <MapPin />
                                             <div>
                                                 <p className="font-bold">{suggestion.placeName}</p>
