@@ -58,3 +58,17 @@ export interface AddressSuggestion {
     placeName: string,
     address_text: string,
 }
+
+export interface GooglePlacesDetailsApiResponse {
+    location?: {
+        latitude?: number,
+        longitude?: number,
+    }
+}
+
+export interface PlaceDetailsAll {
+    location?: {
+        latitude?: number,
+        longitude?: number,
+    }
+}

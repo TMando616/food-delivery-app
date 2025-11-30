@@ -7,7 +7,6 @@ export async function selectSuggestionAction(
     suggestion: AddressSuggestion, 
     sessionToken: string
 ) {
-    console.log("server_action",suggestion)
-
-    await getPlaceDetails(suggestion.placeId, ["location"], sessionToken)
+    const {data:locationData , error} = await getPlaceDetails(suggestion.placeId, ["location"], sessionToken)
+    console.log(locationData)
 }

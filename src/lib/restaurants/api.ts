@@ -1,4 +1,4 @@
-import { GooglePlacesSearchApiResponse } from "@/types";
+import { GooglePlacesDetailsApiResponse, GooglePlacesSearchApiResponse, PlaceDetailsAll } from "@/types";
 import { transformPlaceResults } from "./utils";
 
 // 近くのレストランを取得
@@ -283,6 +283,14 @@ export async function getPlaceDetails(placeId: string, fields: string[], session
         return {error: `PlaceDetailsリクエスト失敗${response.status}`}
     }
 
-    const data = await response.json();
-    console.log("PlaceDetailsData",data)
+    const data: GooglePlacesDetailsApiResponse = await response.json();
+
+    const results: PlaceDetailsAll = {}
+
+    if(fields.includes("location") && data.location) {
+        results.location = data.location
+    }
+
+    return {data: results}
+
 }
