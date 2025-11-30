@@ -34,6 +34,9 @@ export interface PlaceAutoCompleteResult {
         structuredFormat?: {
             mainText?: {
                 text?: string,
+            },
+            secondaryText?: {
+                text?: string,
             }
         }
     },
@@ -48,4 +51,10 @@ export interface RestaurantSuggestion {
     type: string,
     placeId?: string,
     placeName: string,
+}
+
+export interface AddressSuggestion {
+    placeId: string,
+    placeName: string,
+    address_text: string,
 }

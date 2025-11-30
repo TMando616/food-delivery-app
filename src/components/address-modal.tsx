@@ -19,10 +19,51 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "@/components/ui/command"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useDebouncedCallback } from "use-debounce"
+import { v4 as uuidv4 } from 'uuid';
 
 export default function AddressModal() {
+    
     const [inputText, setInputText] = useState("")
+    const [sessionToken, setSessionToken] = useState(uuidv4())
+    const [suggestions, setSuggestions] = useState([])
+    const [isLoading, setIsLoading] = useState(false)
+    const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+    const fetchSuggestions = useDebouncedCallback(async (input: string) => {
+        if(!input.trim()) {
+            setSuggestions([])
+            return
+        }
+        setErrorMessage(null)
+        try {
+            const response = await fetch(
+                `/api/address/autocomplete?input=${input}&sessionToken=${sessionToken}`
+            )
+            if(!response.ok) {
+                const errorData = await response.json()
+                setErrorMessage(errorData.error)
+                return
+            }
+            const data = await response.json();
+            console.log("suggestion", data)
+            setSuggestions(data)
+        } catch (error) {
+            console.error(error)
+            setErrorMessage("予期せぬエラーが発生しました")
+        } finally {
+            setIsLoading(false)
+        }
+    }, 500); 
+
+    useEffect(() => {
+        if(!inputText.trim()) {
+            return
+        }
+        setIsLoading(true)
+        fetchSuggestions(inputText);
+    }, [inputText])
 
     return (
         <div>
