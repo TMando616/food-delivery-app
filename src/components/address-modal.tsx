@@ -25,6 +25,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { AddressSuggestion } from "@/types"
 import { AlertCircle, LoaderCircle, MapPin } from "lucide-react"
 import { selectSuggestionAction } from "@/app/(private)/actions/addressActions"
+import useSWR from "swr"
 
 export default function AddressModal() {
     
@@ -66,6 +67,13 @@ export default function AddressModal() {
         setIsLoading(true)
         fetchSuggestions(inputText);
     }, [inputText])
+
+    const fetcher = (url:string) => fetch(url).then(res => res.json())
+
+    const { data, error, isLoading:loading } = useSWR(`/api/address`, fetcher)
+
+    if (error) return <div>failed to load</div>
+    if (isLoading) return <div>loading...</div>
 
     const handleSelectSuggestion = async (suggestion: AddressSuggestion) => {
         
