@@ -72,3 +72,11 @@ export interface PlaceDetailsAll {
         longitude?: number,
     }
 }
+
+export interface Address {
+    id: number,
+    name: string,
+    address_text: string,
+    latitude: number,
+    longitude: number,
+}
