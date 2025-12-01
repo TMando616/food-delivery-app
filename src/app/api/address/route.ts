@@ -4,8 +4,6 @@ import { NextRequest, NextResponse } from "next/server"
 
 export async function GET(request: NextRequest) {
     try {
-        // 選択中の住所情報をテーブルから取得
-
         let addressList: Address[] = []
         let selectedAddress: Address | null= null
 
@@ -23,10 +21,25 @@ export async function GET(request: NextRequest) {
                 .eq("user_id", user.id)
 
         if(addressError) {
+            console.log("住所情報の取得失敗", addressError)
             return NextResponse.json({error: "住所情報の取得失敗"}, {status: 500})
         }
 
         addressList = addressData
+
+        // 選択中の住所情報をテーブルから取得
+        const {data: selectedAddressData, error:selectedAddressDataError} = await supabase
+                .from("profiles")
+                .select("addresses(id,name,address_text,latitude,longitude)")
+                .eq("id", user.id)
+                .single()
+
+        if(selectedAddressDataError) {
+            console.log("プロフィール情報の取得失敗", selectedAddressDataError)
+            return NextResponse.json({error: "プロフィール情報の取得失敗"}, {status: 500})
+        }
+
+        selectedAddress = selectedAddressData.addresses
 
         return NextResponse.json({addressList, selectedAddress})
     } catch (error) {
