@@ -80,3 +80,8 @@ export interface Address {
     latitude: number,
     longitude: number,
 }
+
+export interface AddressResponse {
+    addressList: Address [],
+    selectedAddress: Address,
+}
