@@ -25,7 +25,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Address, AddressResponse, AddressSuggestion } from "@/types"
 import { AlertCircle, LoaderCircle, MapPin } from "lucide-react"
 import { selectSuggestionAction } from "@/app/(private)/actions/addressActions"
-import useSWR from "swr"
+import useSWR, { mutate } from "swr"
 
 export default function AddressModal() {
     
@@ -70,11 +70,11 @@ export default function AddressModal() {
 
     const fetcher = (url:string) => fetch(url).then(res => res.json())
 
-    const { data, error, isLoading:loading } = useSWR<AddressResponse>(`/api/address`, fetcher)
+    const { data, error, isLoading:loading, mutate } = useSWR<AddressResponse>(`/api/address`, fetcher)
     console.log(data)
 
     if (error) return <div>failed to load</div>
-    if (isLoading) return <div>loading...</div>
+    if (loading) return <div>loading...</div>
 
     const handleSelectSuggestion = async (suggestion: AddressSuggestion) => {
         
@@ -82,6 +82,8 @@ export default function AddressModal() {
             // serverActions呼び出し
             await selectSuggestionAction(suggestion, sessionToken)
             setSessionToken(uuidv4()) // sessionTokenは使いまわせない
+            setInputText("")
+            mutate()
         } catch (error) {
             console.log(error)
             alert("予期せぬエラーが発生しました")
