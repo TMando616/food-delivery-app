@@ -10,14 +10,10 @@ import {
 } from "@/components/ui/dialog"
 import {
   Command,
-  CommandDialog,
   CommandEmpty,
-  CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command"
 import { useEffect, useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
@@ -25,7 +21,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Address, AddressResponse, AddressSuggestion } from "@/types"
 import { AlertCircle, LoaderCircle, MapPin } from "lucide-react"
 import { selectSuggestionAction } from "@/app/(private)/actions/addressActions"
-import useSWR, { mutate } from "swr"
+import useSWR from "swr"
 
 export default function AddressModal() {
     
@@ -68,12 +64,30 @@ export default function AddressModal() {
         fetchSuggestions(inputText);
     }, [inputText])
 
-    const fetcher = (url:string) => fetch(url).then(res => res.json())
+    const fetcher = async (url:string) => {
+        const response = await fetch(url)
 
-    const { data, error, isLoading:loading, mutate } = useSWR<AddressResponse>(`/api/address`, fetcher)
-    console.log(data)
+        if(!response.ok) {
+            const errorData = await response.json()
+            throw new Error(errorData.error)
+        }
 
-    if (error) return <div>failed to load</div>
+        const data = await response.json()
+        return data
+
+    }
+
+    const { 
+        data, 
+        error, 
+        isLoading:loading, 
+        mutate 
+    } = useSWR<AddressResponse>(`/api/address`, fetcher)
+
+    if (error) {
+        console.error(error)
+        return <div>{error.message}</div>
+    }
     if (loading) return <div>loading...</div>
 
     const handleSelectSuggestion = async (suggestion: AddressSuggestion) => {
@@ -94,7 +108,7 @@ export default function AddressModal() {
     return (
         <div>
             <Dialog>
-                <DialogTrigger>住所を選択</DialogTrigger>
+                <DialogTrigger>{data?.selectedAddress ? data.selectedAddress.name : "住所を選択"}</DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>住所</DialogTitle>
