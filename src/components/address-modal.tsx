@@ -20,7 +20,7 @@ import { useDebouncedCallback } from "use-debounce"
 import { v4 as uuidv4 } from 'uuid';
 import { Address, AddressResponse, AddressSuggestion } from "@/types"
 import { AlertCircle, LoaderCircle, MapPin, Trash2 } from "lucide-react"
-import { selectAddressAction, selectSuggestionAction } from "@/app/(private)/actions/addressActions"
+import { deleteAddressAction, selectAddressAction, selectSuggestionAction } from "@/app/(private)/actions/addressActions"
 import useSWR from "swr"
 import { cn } from "@/lib/utils"
 import { Button } from "./ui/button"
@@ -122,9 +122,10 @@ export default function AddressModal() {
     const handleDeleteAddress = async (addressId: number) => {
         const ok = window.confirm("この住所を削除しますか?")
         if(!ok) return
-        
+
         try {
             await deleteAddressAction(addressId)
+            mutate()
         } catch(error) {
             console.log(error)
             alert("予期せぬエラーが発生しました")

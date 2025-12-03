@@ -49,7 +49,7 @@ export async function selectSuggestionAction(
 }
 
 export async function selectAddressAction(
-    id: number
+    addressId: number
 ) {
     const supabase = await createClient()
 
@@ -60,13 +60,38 @@ export async function selectAddressAction(
     }
     
     // データベースへ保存処理
-    const { error } = await supabase.from("profiles")
+    const { error } = await supabase
+    .from("profiles")
     .update({
-        selected_address_id: id
+        selected_address_id: addressId
     }).eq("id", user.id)
 
     if(error) {
         console.error("プロフィールの更新に失敗しました。", error)
         throw new Error("プロフィールの更新に失敗しました。")
+    }
+}
+
+export async function deleteAddressAction(
+    addressId: number
+) {
+    const supabase = await createClient()
+
+    const {data: {user}, error: userError } = await supabase.auth.getUser()
+    
+    if(userError || !user) {
+        redirect("/login")
+    }
+
+    // 削除処理実装
+    const { error: deleteError } = await supabase
+        .from("addresses")
+        .delete()
+        .eq("id", addressId)
+        .eq("user_id", user.id)
+    
+    if(deleteError) {
+        console.error("住所の削除に失敗しました。", deleteError)
+        throw new Error("住所の削除に失敗しました。")
     }
 }
