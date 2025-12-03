@@ -47,3 +47,26 @@ export async function selectSuggestionAction(
         throw new Error("プロフィールの更新に失敗しました。")
     }
 }
+
+export async function selectAddressAction(
+    id: number
+) {
+    const supabase = await createClient()
+
+    const {data: {user}, error: userError } = await supabase.auth.getUser()
+    
+    if(userError || !user) {
+        redirect("/login")
+    }
+    
+    // データベースへ保存処理
+    const { error } = await supabase.from("profiles")
+    .update({
+        selected_address_id: id
+    }).eq("id", user.id)
+
+    if(error) {
+        console.error("プロフィールの更新に失敗しました。", error)
+        throw new Error("プロフィールの更新に失敗しました。")
+    }
+}

@@ -20,8 +20,9 @@ import { useDebouncedCallback } from "use-debounce"
 import { v4 as uuidv4 } from 'uuid';
 import { Address, AddressResponse, AddressSuggestion } from "@/types"
 import { AlertCircle, LoaderCircle, MapPin } from "lucide-react"
-import { selectSuggestionAction } from "@/app/(private)/actions/addressActions"
+import { selectAddressAction, selectSuggestionAction } from "@/app/(private)/actions/addressActions"
 import useSWR from "swr"
+import { cn } from "@/lib/utils"
 
 export default function AddressModal() {
     
@@ -30,6 +31,7 @@ export default function AddressModal() {
     const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
+    const [open, setOpen] = useState(false)
 
     const fetchSuggestions = useDebouncedCallback(async (input: string) => {
         if(!input.trim()) {
@@ -105,9 +107,20 @@ export default function AddressModal() {
 
     }
 
+    const handleSelectAdrress = async (address: Address) => {
+        try {
+            await selectAddressAction(address.id)
+            mutate()
+            setOpen(false)
+        } catch(error) {
+            console.log(error)
+            alert("住所選択に失敗しました")
+        }
+    }
+
     return (
         <div>
-            <Dialog>
+            <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
                 <DialogTrigger>{data?.selectedAddress ? data.selectedAddress.name : "住所を選択"}</DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
@@ -158,7 +171,10 @@ export default function AddressModal() {
                                 <>
                                     <h3 className="font-black text-lg mb-2">保存済みの住所</h3>
                                     { data?.addressList.map((address: Address) => (
-                                        <CommandItem className="p-5" key={address.id}>
+                                        <CommandItem 
+                                            onSelect={() => handleSelectAdrress(address)}
+                                            className={cn("p-5", address.id === data.selectedAddress.id && "bg-muted")} 
+                                            key={address.id}>
                                             <div>
                                                 <p className="font-bold">{address.name}</p>
                                                 <p>{address.address_text}</p>
