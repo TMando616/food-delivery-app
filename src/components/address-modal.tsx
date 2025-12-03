@@ -19,10 +19,11 @@ import { useEffect, useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { v4 as uuidv4 } from 'uuid';
 import { Address, AddressResponse, AddressSuggestion } from "@/types"
-import { AlertCircle, LoaderCircle, MapPin } from "lucide-react"
+import { AlertCircle, LoaderCircle, MapPin, Trash2 } from "lucide-react"
 import { selectAddressAction, selectSuggestionAction } from "@/app/(private)/actions/addressActions"
 import useSWR from "swr"
 import { cn } from "@/lib/utils"
+import { Button } from "./ui/button"
 
 export default function AddressModal() {
     
@@ -114,7 +115,19 @@ export default function AddressModal() {
             setOpen(false)
         } catch(error) {
             console.log(error)
-            alert("住所選択に失敗しました")
+            alert("予期せぬエラーが発生しました")
+        }
+    }
+
+    const handleDeleteAddress = async (addressId: number) => {
+        const ok = window.confirm("この住所を削除しますか?")
+        if(!ok) return
+        
+        try {
+            await deleteAddressAction(addressId)
+        } catch(error) {
+            console.log(error)
+            alert("予期せぬエラーが発生しました")
         }
     }
 
@@ -173,12 +186,21 @@ export default function AddressModal() {
                                     { data?.addressList.map((address: Address) => (
                                         <CommandItem 
                                             onSelect={() => handleSelectAdrress(address)}
-                                            className={cn("p-5", address.id === data.selectedAddress.id && "bg-muted")} 
+                                            className={cn(
+                                                "p-5 justify-between items-center", 
+                                                address.id === data.selectedAddress?.id && "bg-muted"
+                                            )} 
                                             key={address.id}>
                                             <div>
                                                 <p className="font-bold">{address.name}</p>
                                                 <p>{address.address_text}</p>
                                             </div>
+                                            <Button onClick={(e) => {
+                                                e.stopPropagation()
+                                                handleDeleteAddress(address.id)
+                                            }} size={"icon"} variant={"ghost"}>
+                                                <Trash2 />
+                                            </Button>
                                         </CommandItem>
                                     ))}
                                 </>
