@@ -1,5 +1,7 @@
 import { GooglePlacesDetailsApiResponse, GooglePlacesSearchApiResponse, PlaceDetailsAll } from "@/types";
 import { transformPlaceResults } from "./utils";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
 // 近くのレストランを取得
 export async function fetchRestaurants() {
@@ -293,4 +295,39 @@ export async function getPlaceDetails(placeId: string, fields: string[], session
 
     return {data: results}
 
+}
+
+export async function fetchLocation() {
+    const DEFAULT_LOCAION = { lat: 35.6669248, lng: 139.6514163 }
+
+    const supabase = await createClient()
+
+    const {data: {user}, error: userError } = await supabase.auth.getUser()
+    
+    if(userError || !user) {
+        redirect("/login")
+    }
+
+    // 選択中の住所の緯度と経度を取得
+    
+    const { data: selectedAddress, error: selectedAddressError } = await supabase
+        .from('profiles')
+        .select(`
+            addresses (
+                latitude,
+                longitude
+            )
+        `)
+        .eq('id', user.id)
+        .single()
+
+    if(selectedAddressError) {
+        console.error("緯度と経度の取得に失敗しました。", selectedAddressError)
+        throw new Error("緯度と経度の取得に失敗しました。")
+    }
+
+    const lat = selectedAddress.addresses?.latitude ?? DEFAULT_LOCAION.lat
+    const lng = selectedAddress.addresses?.longitude ?? DEFAULT_LOCAION.lng
+
+    return { lat, lng }
 }
