@@ -24,6 +24,7 @@ import { deleteAddressAction, selectAddressAction, selectSuggestionAction } from
 import useSWR from "swr"
 import { cn } from "@/lib/utils"
 import { Button } from "./ui/button"
+import { useRouter } from "next/navigation"
 
 export default function AddressModal() {
     
@@ -33,6 +34,8 @@ export default function AddressModal() {
     const [isLoading, setIsLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
     const [open, setOpen] = useState(false)
+
+    const router = useRouter()
 
     const fetchSuggestions = useDebouncedCallback(async (input: string) => {
         if(!input.trim()) {
@@ -113,6 +116,7 @@ export default function AddressModal() {
             await selectAddressAction(address.id)
             mutate()
             setOpen(false)
+            router.refresh()
         } catch(error) {
             console.log(error)
             alert("予期せぬエラーが発生しました")

@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
 // 近くのレストランを取得
-export async function fetchRestaurants() {
+export async function fetchRestaurants(lat: number, lng: number) {
     const url ="https://places.googleapis.com/v1/places:searchNearby"
 
     const apiKey = process.env.GOOGLE_API_KEY
@@ -38,8 +38,8 @@ export async function fetchRestaurants() {
         locationRestriction: {
             circle: {
             center: {
-                latitude: 35.6669248,
-                longitude: 139.6514163},
+                latitude: lat,
+                longitude: lng},
             radius: 500.0
             }
         },
@@ -79,7 +79,7 @@ export async function fetchRestaurants() {
 }
 
 // 近くのラーメン店を取得
-export async function fetchRamenRestaurants() {
+export async function fetchRamenRestaurants(lat: number, lng: number) {
     const url ="https://places.googleapis.com/v1/places:searchNearby"
 
     const apiKey = process.env.GOOGLE_API_KEY
@@ -96,8 +96,8 @@ export async function fetchRamenRestaurants() {
         locationRestriction: {
             circle: {
             center: {
-                latitude: 35.6669248,
-                longitude: 139.6514163},
+                latitude: lat,
+                longitude: lng},
             radius: 500.0
             }
         },
