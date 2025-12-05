@@ -104,6 +104,8 @@ export default function AddressModal() {
             setSessionToken(uuidv4()) // sessionTokenは使いまわせない
             setInputText("")
             mutate()
+
+            router.refresh()
         } catch (error) {
             console.log(error)
             alert("予期せぬエラーが発生しました")

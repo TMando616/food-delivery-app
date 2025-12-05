@@ -135,7 +135,7 @@ export async function fetchRamenRestaurants(lat: number, lng: number) {
 }
 
 // カテゴリ検索機能
-export async function fetchCategoryRetaurants(category: string) {
+export async function fetchCategoryRetaurants(category: string, lat: number, lng: number) {
     const url ="https://places.googleapis.com/v1/places:searchNearby"
 
     const apiKey = process.env.GOOGLE_API_KEY
@@ -152,8 +152,8 @@ export async function fetchCategoryRetaurants(category: string) {
         locationRestriction: {
             circle: {
             center: {
-                latitude: 35.6669248,
-                longitude: 139.6514163},
+                latitude: lat,
+                longitude: lng},
             radius: 500.0
             }
         },
@@ -191,7 +191,7 @@ export async function fetchCategoryRetaurants(category: string) {
 }
 
 // キーワード検索機能
-export async function fetchRetaurantsByKeyword(query: string) {
+export async function fetchRetaurantsByKeyword(query: string, lat: number, lng: number) {
     const url ="https://places.googleapis.com/v1/places:searchText"
 
     const apiKey = process.env.GOOGLE_API_KEY
@@ -208,8 +208,8 @@ export async function fetchRetaurantsByKeyword(query: string) {
         locationBias: {
             circle: {
                 center: {
-                    latitude: 35.6669248,
-                    longitude: 139.6514163},
+                    latitude: lat,
+                    longitude: lng},
                 radius: 500.0
             }
         },
