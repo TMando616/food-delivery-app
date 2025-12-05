@@ -10,8 +10,7 @@ export default async function RestaurantPage({params, searchParams} : {
 }) {
   const { restaurantId } = await params
   const { sessionToken } = await searchParams
-  console.log(restaurantId, sessionToken)
-  // const {} = await getPlaceDetails()
+  const data = await getPlaceDetails(restaurantId, ["displayName","photos","primaryType"], sessionToken)
   return (
     <div>
       <div className="h-64 rounded-xl shadow-md relative overflow-hidden">
