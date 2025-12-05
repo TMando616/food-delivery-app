@@ -130,8 +130,12 @@ export default function AddressModal() {
         if(!ok) return
 
         try {
+            const selectedAddressId = data?.selectedAddress?.id
             await deleteAddressAction(addressId)
             mutate()
+            if (selectedAddressId === addressId) {
+                router.refresh()
+            }
         } catch(error) {
             console.log(error)
             alert("予期せぬエラーが発生しました")
