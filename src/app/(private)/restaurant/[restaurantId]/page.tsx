@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import { getPlaceDetails } from '@/lib/restaurants/api'
 import { Heart } from 'lucide-react'
 import Image from 'next/image'
+import { notFound } from 'next/navigation'
 import React from 'react'
 
 export default async function RestaurantPage({params, searchParams} : {
@@ -10,15 +11,16 @@ export default async function RestaurantPage({params, searchParams} : {
 }) {
   const { restaurantId } = await params
   const { sessionToken } = await searchParams
-  const data = await getPlaceDetails(restaurantId, ["displayName","photos","primaryType"], sessionToken)
-  console.log(data)
+  const { data:restaurant, error } = await getPlaceDetails(restaurantId, ["displayName","photos","primaryType"], sessionToken)
+
+  if (!restaurant) notFound()
   return (
     <div>
       <div className="h-64 rounded-xl shadow-md relative overflow-hidden">
         <Image 
-          src={"/no_image.png"}
+          src={restaurant.photoUrl ?? "/no_image.png"}
           fill
-          alt={"レストラン画像"}
+          alt={restaurant.displayName ?? "レストラン画像"}
           className="object-cover"
           priority
           sizes={"(max-width: 1200px) 100vw, 1200px"}
@@ -33,7 +35,7 @@ export default async function RestaurantPage({params, searchParams} : {
       </div>
       <div className='mt-4 flex items-center justify-between'>
         <div>
-          <h1 className='text-3l font-bold'>レストラン名</h1>
+          <h1 className='text-3l font-bold'>{restaurant.displayName}</h1>
         </div>
         <div className='flex-1'>
           <div className='ml-auto w-80 bg-yellow-200'>検索バー</div>

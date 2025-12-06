@@ -302,7 +302,7 @@ export async function getPlaceDetails(placeId: string, fields: string[], session
     }
 
     if(fields.includes("photos")) {
-        results.photoUrl = data.photos?.[0]?.name ? await getPhotoUrl(data.photos[0].name) : "/no_image.png"
+        results.photoUrl = data.photos?.[0]?.name ? await getPhotoUrl(data.photos[0].name, 1200) : "/no_image.png"
     }
 
     return {data: results}
