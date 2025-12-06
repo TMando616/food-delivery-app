@@ -65,8 +65,11 @@ export interface GooglePlacesDetailsApiResponse {
         longitude?: number,
     },
     displayName?: {
-        text?: string
-    }
+        languageCode?: string,
+        text?: string,
+    },
+    primaryType?: string,
+    photos?: PlacePhoto[],
 }
 
 export interface PlaceDetailsAll {
@@ -74,9 +77,9 @@ export interface PlaceDetailsAll {
         latitude?: number,
         longitude?: number,
     },
-    displayName?: {
-        text?: string
-    }
+    displayName?: string,
+    primaryType?: string,
+    photoUrl?: string,
 }
 
 export interface Address {
