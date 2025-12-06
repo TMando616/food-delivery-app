@@ -293,6 +293,18 @@ export async function getPlaceDetails(placeId: string, fields: string[], session
         results.location = data.location
     }
 
+    if(fields.includes("displayName") && data.displayName?.text) {
+        results.displayName = data.displayName.text
+    }
+
+    if(fields.includes("primaryType") && data.primaryType) {
+        results.primaryType = data.primaryType
+    }
+
+    if(fields.includes("photos") && data.photos) {
+        results.photoUrl = data.photos?.[0]?.name ? await getPhotoUrl(data.photos[0].name) : "/no_image.png"
+    }
+
     return {data: results}
 
 }

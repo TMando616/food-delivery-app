@@ -63,6 +63,9 @@ export interface GooglePlacesDetailsApiResponse {
     location?: {
         latitude?: number,
         longitude?: number,
+    },
+    displayName?: {
+        text?: string
     }
 }
 
@@ -70,6 +73,9 @@ export interface PlaceDetailsAll {
     location?: {
         latitude?: number,
         longitude?: number,
+    },
+    displayName?: {
+        text?: string
     }
 }
 
