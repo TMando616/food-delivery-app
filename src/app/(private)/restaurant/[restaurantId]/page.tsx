@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button'
+import { fetchCategoryMenus } from '@/lib/menus/api'
 import { getPlaceDetails } from '@/lib/restaurants/api'
 import { Heart } from 'lucide-react'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import React from 'react'
 
 export default async function RestaurantPage({params, searchParams} : {
   params: Promise<{restaurantId: string }>
@@ -12,6 +12,10 @@ export default async function RestaurantPage({params, searchParams} : {
   const { restaurantId } = await params
   const { sessionToken } = await searchParams
   const { data:restaurant, error } = await getPlaceDetails(restaurantId, ["displayName","photos","primaryType"], sessionToken)
+
+  const primaryType = restaurant?.primaryType
+
+  const { data:categoryMenus, error:menusError } = primaryType ? await fetchCategoryMenus(primaryType) : {data: []}
 
   if (!restaurant) notFound()
   return (
