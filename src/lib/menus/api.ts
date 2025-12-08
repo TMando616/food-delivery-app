@@ -32,8 +32,31 @@ export async function fetchCategoryMenus(primaryType: string) {
         ))
     
     categoryMenus.push({
-        categoryName: "注目商品",
         id: "featured",
+        categoryName: "注目商品",
         items: featuredItems
     })
+
+    const categories = Array.from(new Set(menus.map((menu) => menu.category)))
+    
+    for (const category of categories) {
+        const items = menus
+            .filter((menu) => menu.genre === category)
+            .map((menu) => (
+                {
+                    id: menu.id,
+                    photoUrl: supabase.storage.from("menus").getPublicUrl(menu.image_path).data.publicUrl,
+                    name: menu.name,
+                    price: menu.price
+                }
+            ))
+        
+        categoryMenus.push({
+            id: category,
+            categoryName: category,
+            items: items
+        })
+    }
+
+    return { data: categoryMenus }
 }
