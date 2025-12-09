@@ -94,3 +94,16 @@ export interface AddressResponse {
     addressList: Address [],
     selectedAddress: Address,
 }
+
+export interface CategoryMenu {
+    categoryName: string,
+    id: string,
+    items: Menu[]
+}
+
+export interface Menu {
+    id: number,
+    name: string,
+    photoUrl: string,
+    price: number,
+}

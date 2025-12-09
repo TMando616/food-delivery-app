@@ -1,8 +1,10 @@
+import { CategoryMenu, Menu } from "@/types"
 import { createClient } from "@/utils/supabase/server"
 
 export async function fetchCategoryMenus(primaryType: string) {
 
     const supabase = await createClient()
+    const bucket = supabase.storage.from("menus")
     
     const { data: menus, error:menusError } = await supabase
         .from('menus')
@@ -18,14 +20,14 @@ export async function fetchCategoryMenus(primaryType: string) {
         return {data: []}
     }
 
-    const categoryMenus = []
+    const categoryMenus: CategoryMenu[] = []
 
     const featuredItems = menus
         .filter((menu) => menu.is_featured)
-        .map((menu) => (
+        .map((menu):Menu => (
             {
                 id: menu.id,
-                photoUrl: supabase.storage.from("menus").getPublicUrl(menu.image_path).data.publicUrl,
+                photoUrl: bucket.getPublicUrl(menu.image_path).data.publicUrl,
                 name: menu.name,
                 price: menu.price
             }
@@ -42,10 +44,10 @@ export async function fetchCategoryMenus(primaryType: string) {
     for (const category of categories) {
         const items = menus
             .filter((menu) => menu.genre === category)
-            .map((menu) => (
+            .map((menu):Menu => (
                 {
                     id: menu.id,
-                    photoUrl: supabase.storage.from("menus").getPublicUrl(menu.image_path).data.publicUrl,
+                    photoUrl: bucket.getPublicUrl(menu.image_path).data.publicUrl,
                     name: menu.name,
                     price: menu.price
                 }
