@@ -43,7 +43,7 @@ export async function fetchCategoryMenus(primaryType: string) {
     
     for (const category of categories) {
         const items = menus
-            .filter((menu) => menu.genre === category)
+            .filter((menu) => menu.category === category)
             .map((menu):Menu => (
                 {
                     id: menu.id,

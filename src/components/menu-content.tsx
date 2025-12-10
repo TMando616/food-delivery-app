@@ -3,6 +3,7 @@ import CategorySideBar from "./category-side-bar";
 import Section from "./section";
 import CarouselContainer from "./carousel-container";
 import MenuCard from "./menu-card";
+import FlatMenuCard from "./flat-menu-card";
 
 interface MenuContentProps {
     categoryMenus: CategoryMenu[]
@@ -22,7 +23,11 @@ export default function MenuContent({categoryMenus}:MenuContentProps ) {
                                 ))}
                             </CarouselContainer>
                         ): (
-                            <div>リストメニュー</div>
+                            <div className="grid grid-cols-2 gap-4">
+                                {category.items.map((menu) => (
+                                    <FlatMenuCard key={menu.id} menu={menu}/>
+                                ))}
+                            </div>
                         )}
                     </Section>
                 ))}
