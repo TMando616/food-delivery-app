@@ -1,3 +1,5 @@
+"use client"
+
 import { CategoryMenu } from "@/types";
 import CategorySideBar from "./category-side-bar";
 import Section from "./section";
@@ -10,9 +12,13 @@ interface MenuContentProps {
 }
 
 export default function MenuContent({categoryMenus}:MenuContentProps ) {
+
+    const handleSelectCategory = (categoryId: string) => {
+        console.log(categoryId)
+    }
     return (
         <div className="flex gap-4">
-            <CategorySideBar categoryMenus={categoryMenus}/>
+            <CategorySideBar categoryMenus={categoryMenus} onSelectCategory={handleSelectCategory}/>
             <div className="w-3/4 bg-blue-50">
                 {categoryMenus.map((category) => (
                     <Section title={category.categoryName} key={category.id}>
