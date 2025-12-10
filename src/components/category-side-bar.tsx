@@ -7,7 +7,7 @@ interface CategorySideBarProps {
 
 export default function CategorySideBar({categoryMenus}: CategorySideBarProps) {
     return (
-        <aside className='w-1/4 bg-amber-50'>
+        <aside className='w-1/4 bg-amber-50 sticky top-16 h-[calc(100vh-64px)]'>
             <p className='p-3 font-bold'>メニュー Menu</p>
             <nav>
                 <ul>
