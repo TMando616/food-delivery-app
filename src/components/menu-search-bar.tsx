@@ -1,12 +1,26 @@
 "use client"
 import { Search } from 'lucide-react'
-import React from 'react'
+import { usePathname, useSearchParams, useRouter } from 'next/navigation'
 import { useDebouncedCallback } from 'use-debounce'
 
 export default function MenuSearchBar() {
 
+    const searchParams = useSearchParams()
+    const pathName = usePathname()
+    const { replace } = useRouter()
+
     const handleSearchMenu = useDebouncedCallback((inputText: string) => {
-            console.log(inputText)
+        const params = new URLSearchParams(searchParams)
+
+        if(inputText.trim()) {
+            params.set("searchMenu", inputText)
+        } else {
+            params.delete("searchMenu")
+        }
+        const query = params.toString()
+
+        replace(query ? `${pathName}?${query}` : `${pathName}`)
+
     }, 500)
     
     return (
