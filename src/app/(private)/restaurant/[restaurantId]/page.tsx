@@ -1,4 +1,5 @@
 import MenuContent from '@/components/menu-content'
+import MenuSearchBar from '@/components/menu-search-bar'
 import { Button } from '@/components/ui/button'
 import { fetchCategoryMenus } from '@/lib/menus/api'
 import { getPlaceDetails } from '@/lib/restaurants/api'
@@ -44,7 +45,9 @@ export default async function RestaurantPage({params, searchParams} : {
             <h1 className='text-3l font-bold'>{restaurant.displayName}</h1>
           </div>
           <div className='flex-1'>
-            <div className='ml-auto w-80 bg-yellow-200'>検索バー</div>
+            <div className='ml-auto w-80'>
+              <MenuSearchBar />
+            </div>
           </div>
         </div>
       </div>
