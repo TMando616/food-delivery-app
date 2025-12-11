@@ -6,6 +6,7 @@ import Section from "./section";
 import CarouselContainer from "./carousel-container";
 import MenuCard from "./menu-card";
 import FlatMenuCard from "./flat-menu-card";
+import { useState } from "react";
 
 interface MenuContentProps {
     categoryMenus: CategoryMenu[]
@@ -13,17 +14,23 @@ interface MenuContentProps {
 
 export default function MenuContent({categoryMenus}:MenuContentProps ) {
 
+    const [activeCategoryId , setActiveCategoryId] = useState(categoryMenus[0].id)
+
     const handleSelectCategory = (categoryId: string) => {
         const element = document.getElementById(`${categoryId}-menu`)
-
+        
         if(element) {
             element.scrollIntoView({behavior: "smooth"})
         }
     }
     return (
         <div className="flex gap-4">
-            <CategorySideBar categoryMenus={categoryMenus} onSelectCategory={handleSelectCategory}/>
-            <div className="w-3/4 bg-blue-50">
+            <CategorySideBar 
+                categoryMenus={categoryMenus} 
+                onSelectCategory={handleSelectCategory}
+                activeCategoryId={activeCategoryId}
+            />
+            <div className="w-3/4">
                 {categoryMenus.map((category) => (
                     <div id={`${category.id}-menu`}  key={category.id} className="scroll-mt-16">
                         <Section title={category.categoryName}>
