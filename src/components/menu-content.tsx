@@ -14,28 +14,34 @@ interface MenuContentProps {
 export default function MenuContent({categoryMenus}:MenuContentProps ) {
 
     const handleSelectCategory = (categoryId: string) => {
-        console.log(categoryId)
+        const element = document.getElementById(`${categoryId}-menu`)
+
+        if(element) {
+            element.scrollIntoView({behavior: "smooth"})
+        }
     }
     return (
         <div className="flex gap-4">
             <CategorySideBar categoryMenus={categoryMenus} onSelectCategory={handleSelectCategory}/>
             <div className="w-3/4 bg-blue-50">
                 {categoryMenus.map((category) => (
-                    <Section title={category.categoryName} key={category.id}>
-                        {category.id === "featured" ? (
-                            <CarouselContainer slideToShow={4}>
-                                {category.items.map((menu) => (
-                                    <MenuCard menu={menu} key={menu.id}/>
-                                ))}
-                            </CarouselContainer>
-                        ): (
-                            <div className="grid grid-cols-2 gap-4">
-                                {category.items.map((menu) => (
-                                    <FlatMenuCard key={menu.id} menu={menu}/>
-                                ))}
-                            </div>
-                        )}
-                    </Section>
+                    <div id={`${category.id}-menu`}  key={category.id} className="scroll-mt-16">
+                        <Section title={category.categoryName}>
+                            {category.id === "featured" ? (
+                                <CarouselContainer slideToShow={4}>
+                                    {category.items.map((menu) => (
+                                        <MenuCard menu={menu} key={menu.id}/>
+                                    ))}
+                                </CarouselContainer>
+                            ): (
+                                <div className="grid grid-cols-2 gap-4">
+                                    {category.items.map((menu) => (
+                                        <FlatMenuCard key={menu.id} menu={menu}/>
+                                    ))}
+                                </div>
+                            )}
+                        </Section>
+                    </div>
                 ))}
             </div>
         </div>
