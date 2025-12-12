@@ -71,3 +71,31 @@ export async function fetchCategoryMenus(primaryType: string, searchQuery?: stri
 
     return { data: categoryMenus }
 }
+
+export async function fetchMenus(primaryType: string) {
+
+    const supabase = await createClient()
+    const bucket = supabase.storage.from("menus")
+
+    const { data:menuItems, error:menuItemsError} = await supabase
+        .from("menus")
+        .select("*")
+        .eq("genre", primaryType)
+
+    if(menuItemsError) {
+        console.error("メニューの取得に失敗しました。", menuItemsError)
+        return {error: "メニューの取得に失敗しました。"}
+    }
+
+    const menus = menuItems
+        .map((menu):Menu => (
+            {
+                id: menu.id,
+                photoUrl: bucket.getPublicUrl(menu.image_path).data.publicUrl,
+                name: menu.name,
+                price: menu.price
+            }
+        ))
+    
+    return { data: menus }
+}
