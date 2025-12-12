@@ -9,15 +9,15 @@ import { notFound } from 'next/navigation'
 
 export default async function RestaurantPage({params, searchParams} : {
   params: Promise<{restaurantId: string }>
-  searchParams: Promise<{sessionToken: string }>
+  searchParams: Promise<{sessionToken: string, searchMenu: string }>
 }) {
   const { restaurantId } = await params
-  const { sessionToken } = await searchParams
+  const { sessionToken, searchMenu } = await searchParams
   const { data:restaurant, error } = await getPlaceDetails(restaurantId, ["displayName","photos","primaryType"], sessionToken)
 
   const primaryType = restaurant?.primaryType
 
-  const { data:categoryMenus, error:menusError } = primaryType ? await fetchCategoryMenus(primaryType) : {data: []}
+  const { data:categoryMenus, error:menusError } = primaryType ? await fetchCategoryMenus(primaryType, searchMenu) : {data: []}
 
   if (!restaurant) notFound()
   return (
