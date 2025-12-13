@@ -8,6 +8,7 @@ import MenuCard from "./menu-card";
 import FlatMenuCard from "./flat-menu-card";
 import { useState } from "react";
 import { InView } from "react-intersection-observer";
+import MenuModal from "./menu-modal";
 
 interface MenuContentProps {
     categoryMenus: CategoryMenu[]
@@ -58,6 +59,8 @@ export default function MenuContent({categoryMenus}:MenuContentProps ) {
                     </InView>
                 ))}
             </div>
+
+            <MenuModal />
         </div>
     )
 }
