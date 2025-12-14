@@ -10,10 +10,14 @@ import {
 import Image from "next/image"
 import { Button } from "./ui/button"
 
-export default function MenuModal() {
+interface MenuModalProps {
+    isOpen: boolean,
+}
+
+export default function MenuModal({isOpen}: MenuModalProps) {
     
     return (
-        <Dialog>
+        <Dialog open={isOpen}>
             <DialogTrigger>Open</DialogTrigger>
             <DialogContent className="lg:max-w-4xl">
                 <DialogHeader className="sr-only">

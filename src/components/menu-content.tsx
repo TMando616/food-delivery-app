@@ -9,12 +9,15 @@ import FlatMenuCard from "./flat-menu-card";
 import { useState } from "react";
 import { InView } from "react-intersection-observer";
 import MenuModal from "./menu-modal";
+import { useModal } from "@/app/context/modalContext";
 
 interface MenuContentProps {
     categoryMenus: CategoryMenu[]
 }
 
 export default function MenuContent({categoryMenus}:MenuContentProps ) {
+
+    const { isOpen, setIsOpen, openModal, closeModal, selectedItem } = useModal()
 
     const [activeCategoryId , setActiveCategoryId] = useState(categoryMenus[0].id)
 
@@ -45,7 +48,7 @@ export default function MenuContent({categoryMenus}:MenuContentProps ) {
                             {category.id === "featured" ? (
                                 <CarouselContainer slideToShow={4}>
                                     {category.items.map((menu) => (
-                                        <MenuCard menu={menu} key={menu.id}/>
+                                        <MenuCard menu={menu} key={menu.id} onClick={openModal}/>
                                     ))}
                                 </CarouselContainer>
                             ): (
@@ -60,7 +63,7 @@ export default function MenuContent({categoryMenus}:MenuContentProps ) {
                 ))}
             </div>
 
-            <MenuModal />
+            <MenuModal isOpen={isOpen}/>
         </div>
     )
 }
