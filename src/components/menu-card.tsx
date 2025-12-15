@@ -1,3 +1,4 @@
+"use client"
 import { Menu } from '@/types'
 import Image from 'next/image'
 
