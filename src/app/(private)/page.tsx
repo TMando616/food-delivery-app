@@ -1,6 +1,6 @@
 import CarouselContainer from "@/components/carousel-container";
 import Categories from "@/components/categories";
-import MenuCard from "@/components/menu-card";
+import MenuClient from "@/components/menu-client";
 import MenuList from "@/components/menu-list";
 import RestaurantCard from "@/components/restaurant-card";
 import RestaurantList from "@/components/restaurant-list";
@@ -54,13 +54,9 @@ export default async function Home() {
     {/* メニュー情報 */}
       {!menus ? (
         <p>{menusError}</p>
-      ) : menus.length > 0 ? (
-        <Section title={restaurant?.restaurantName}  expandedContent={<MenuList menus={menus}/>}>
-          <CarouselContainer slideToShow={6}>
-            {menus.map((menu) => (
-              <MenuCard key={menu.id} menu={menu} />
-            ))}
-          </CarouselContainer>
+      ) : menus.length > 0 && restaurant ? (
+        <Section title={restaurant.restaurantName}  expandedContent={<MenuList menus={menus} restaurantId={restaurant.id}/>}>
+          <MenuClient restaurantId={restaurant.id} menus={menus}/>
         </Section>
       ) : (
         <p>近くにラーメン店がありません。</p>
