@@ -12,10 +12,11 @@ import MenuModal from "./menu-modal";
 import { useModal } from "@/app/context/modalContext";
 
 interface MenuContentProps {
-    categoryMenus: CategoryMenu[]
+    categoryMenus: CategoryMenu[],
+    restaurantId: string,
 }
 
-export default function MenuContent({categoryMenus}:MenuContentProps ) {
+export default function MenuContent({categoryMenus, restaurantId}:MenuContentProps ) {
 
     const { isOpen, setIsOpen, openModal, closeModal, selectedItem } = useModal()
 
@@ -63,7 +64,7 @@ export default function MenuContent({categoryMenus}:MenuContentProps ) {
                 ))}
             </div>
 
-            <MenuModal isOpen={isOpen} closeModal={closeModal} selectedItem={selectedItem}/>
+            <MenuModal isOpen={isOpen} closeModal={closeModal} selectedItem={selectedItem} restaurantId={restaurantId}/>
         </div>
     )
 }
