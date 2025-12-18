@@ -23,8 +23,41 @@ export async function addToCartAction(selectedItem: Menu, quantity: number, rest
         console.error("カートの取得に失敗しました。", existingCartError)
         throw new Error("カートの取得に失敗しました。")
     }
-    
+
     // 既存のカートが存在しない場合、カートを新規作成&アイテムを追加
+
+    if(!existingCart) {
+        const { data: newCart, error: newCartError} = await supabase
+            .from("carts")
+            .insert({
+                restaurant_id: restaurantId,
+                user_id: user.id,
+            })
+            .select("id")
+            .single()
+        
+        if(newCartError) {
+            console.error("カートの作成に失敗しました。", existingCartError)
+            throw new Error("カートの作成に失敗しました。")
+        }
+
+        const newCartId = newCart.id
+        // カートの中にアイテムを追加
+        const { error: insertError } = await supabase
+            .from("cart_items")
+            .insert({
+                quantity: quantity,
+                cart_id: newCartId,
+                menu_id: selectedItem.id,
+            })
+
+        if(insertError) {
+            console.error("カートアイテムの追加に失敗しました。", insertError)
+            throw new Error("カートアイテムの追加に失敗しました。")
+        }
+
+        return
+    }
 
     // 既存のカートが存在する場合、アイテムを追加or数量を変更
 
