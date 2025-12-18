@@ -1,7 +1,31 @@
 "use server"
 
 import { Menu } from "@/types";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
 export async function addToCartAction(selectedItem: Menu, quantity: number, restaurantId: string) {
-    console.log(selectedItem, quantity, restaurantId)
+    const supabase = await createClient()
+
+    const {data: {user}, error: userError } = await supabase.auth.getUser()
+    
+    if(userError || !user) {
+        redirect("/login")
+    }
+
+    const { data: existingCart, error: existingCartError} = await supabase
+        .from("carts")
+        .select("id")
+        .match({user_id: user.id, restaurant_id: restaurantId})
+        .maybeSingle()
+
+    if(existingCartError) {
+        console.error("カートの取得に失敗しました。", existingCartError)
+        throw new Error("カートの取得に失敗しました。")
+    }
+    
+    // 既存のカートが存在しない場合、カートを新規作成&アイテムを追加
+
+    // 既存のカートが存在する場合、アイテムを追加or数量を変更
+
 }
