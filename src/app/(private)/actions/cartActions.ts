@@ -60,5 +60,16 @@ export async function addToCartAction(selectedItem: Menu, quantity: number, rest
     }
 
     // 既存のカートが存在する場合、アイテムを追加or数量を変更
+    const { error: upsertError } = await supabase
+        .from("cart_items")
+        .upsert({
+            quantity: quantity,
+            cart_id: existingCart.id,
+            menu_id: selectedItem.id,
+        }, {onConflict: "menu_id,cart_id"})
 
+    if(upsertError) {
+        console.error("カートアイテムの追加・更新に失敗しました。", upsertError)
+        throw new Error("カートアイテムの追加・更新に失敗しました。")
+    }
 }
