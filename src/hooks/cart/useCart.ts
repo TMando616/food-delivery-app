@@ -20,7 +20,7 @@ export function useCart() {
         error: cartsError, 
         isLoading, 
         mutate: mutateCart 
-    } = useSWR<>(`/api/cart`, fetcher)
+    } = useSWR(`/api/cart`, fetcher)
 
     return { carts, cartsError, isLoading, mutateCart}
 }
