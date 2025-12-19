@@ -95,8 +95,8 @@ export async function GET(request: NextRequest) {
         return NextResponse.json(results)
 
     } catch (error) {
-        console.log(error)
-        return {error: "予期せぬエラーが発生しました"}
+        console.error(error)
+        return NextResponse.json({error: "予期せぬエラーが発生しました。"})
     }
 
 }
