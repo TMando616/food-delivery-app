@@ -1,3 +1,4 @@
+import { Cart } from "@/types"
 import useSWR from "swr"
 
 export function useCart() {
@@ -20,7 +21,7 @@ export function useCart() {
         error: cartsError, 
         isLoading, 
         mutate: mutateCart 
-    } = useSWR(`/api/cart`, fetcher)
+    } = useSWR<Cart>(`/api/cart`, fetcher)
 
     return { carts, cartsError, isLoading, mutateCart}
 }
