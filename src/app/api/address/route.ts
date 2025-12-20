@@ -44,6 +44,6 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({addressList, selectedAddress})
     } catch (error) {
         console.log(error)
-        return NextResponse.json({error: "例外的なエラーが発生しました"})
+        return NextResponse.json({error: "例外的なエラーが発生しました"}, {status: 500})
     }
 }

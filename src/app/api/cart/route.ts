@@ -38,6 +38,6 @@ export async function GET(request: NextRequest) {
         return NextResponse.json(carts)
     } catch (error) {
         console.error(error)
-        return NextResponse.json({error: "予期せぬエラーが発生しました。"})
+        return NextResponse.json({error: "予期せぬエラーが発生しました。"}, {status: 500})
     }
 }
