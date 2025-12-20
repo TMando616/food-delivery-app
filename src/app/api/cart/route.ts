@@ -1,3 +1,4 @@
+import { getPlaceDetails } from "@/lib/restaurants/api";
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -34,8 +35,22 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({error: "カート情報を取得できませんでした。"}, {status: 500})
         }
 
-        console.log(carts)
-        return NextResponse.json(carts)
+        const promises = carts.map(async (cart) => {
+            const { data:restaurantData, error } = await getPlaceDetails(cart.restaurant_id, ["displayName","photos"])
+
+            if(error || !restaurantData) {
+                throw new Error(`レストランデータの取得に失敗しました。${error}`)
+            }
+
+            return {
+                ...cart,
+                restaurantName: restaurantData.displayName,
+                photoUrl: restaurantData.photoUrl,
+            }
+        })
+
+        const result = await Promise.all(promises)
+        return NextResponse.json(result)
     } catch (error) {
         console.error(error)
         return NextResponse.json({error: "予期せぬエラーが発生しました。"}, {status: 500})
