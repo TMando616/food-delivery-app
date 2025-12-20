@@ -21,7 +21,7 @@ export function useCart() {
         error: cartsError, 
         isLoading, 
         mutate: mutateCart 
-    } = useSWR<Cart>(`/api/cart`, fetcher)
+    } = useSWR<Cart[]>(`/api/cart`, fetcher)
 
     return { carts, cartsError, isLoading, mutateCart}
 }
