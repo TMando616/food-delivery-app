@@ -9,7 +9,11 @@ export default function Cart() {
     const { carts } = useCart()
     console.log(carts)
 
-    const { displayMode, sheetCart, cartCount } = computeCartDisplayLogic(carts)
+    const { 
+        displayMode, 
+        sheetCart, 
+        cartCount 
+    } = computeCartDisplayLogic(carts)
 
     return displayMode === "cartSheet" ? (
         <CartSheet />
