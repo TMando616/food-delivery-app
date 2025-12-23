@@ -16,7 +16,7 @@ export default function Cart() {
     } = computeCartDisplayLogic(carts)
 
     return displayMode === "cartSheet" ? (
-        <CartSheet />
+        <CartSheet cart={sheetCart} count={cartCount}/>
     ) : (
         <CartDropDown />
     )
