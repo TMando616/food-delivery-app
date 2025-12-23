@@ -1,6 +1,8 @@
 import { Cart } from '@/types'
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet'
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet'
 import { ShoppingCart } from 'lucide-react'
+import Image from 'next/image'
+import { Button } from './ui/button'
 
 interface CartSheetProps {
   cart: Cart | null,
@@ -28,7 +30,18 @@ export default function CartSheet({cart, count}: CartSheetProps) {
         {cart ? (
           <div>アイテム</div>
         ) : (
-          <div>空</div>
+          <div className='flex flex-col items-center justify-center h-full gap-4'>
+            <Image
+              src={"/images/trolley.png"}
+              width={192}
+              height={192}
+              alt={"カート"}
+            />
+            <h2 className='text-xl font-bold'>商品をカートに追加しよう</h2>
+            <SheetClose asChild>
+              <Button className='rounded-full'>お買い物を開始する</Button>
+            </SheetClose>
+          </div>
         )}
       </SheetContent>
     </Sheet>
