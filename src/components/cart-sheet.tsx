@@ -35,7 +35,7 @@ export default function CartSheet({cart, count}: CartSheetProps) {
               src={"/images/trolley.png"}
               width={192}
               height={192}
-              alt={"カート"}
+              alt="カート"
             />
             <h2 className='text-xl font-bold'>商品をカートに追加しよう</h2>
             <SheetClose asChild>
