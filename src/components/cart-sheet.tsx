@@ -1,8 +1,15 @@
 import { Cart } from '@/types'
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet'
-import { ShoppingCart } from 'lucide-react'
+import { ShoppingCart, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import { Button } from './ui/button'
+import Link from 'next/link'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { TooltipProvider } from '@radix-ui/react-tooltip'
 
 interface CartSheetProps {
   cart: Cart | null,
@@ -15,7 +22,7 @@ export default function CartSheet({cart, count}: CartSheetProps) {
       <SheetTrigger className="relative cursor-pointer">
         <ShoppingCart />
         <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-green-700 rounded-full size-4 text-xs text-primary-foreground flex items-center justify-center">
-          {"#"}
+          {count}
         </span>
       </SheetTrigger>
 
@@ -28,7 +35,21 @@ export default function CartSheet({cart, count}: CartSheetProps) {
         </SheetHeader>
 
         {cart ? (
-          <div>アイテム</div>
+          <div className='flex justify-between items-center'>
+            <Link className='font-bold text-2xl' href={`/restaurant/${cart.restaurant_id}`}>{cart.restaurantName}</Link>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant='ghost' size={"icon"}>
+                    <Trash2 color='red'/>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>ゴミ箱を空にする</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         ) : (
           <div className='flex flex-col items-center justify-center h-full gap-4'>
             <Image
