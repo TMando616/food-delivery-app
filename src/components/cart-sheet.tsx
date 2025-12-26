@@ -35,6 +35,7 @@ export default function CartSheet({cart, count}: CartSheetProps) {
         </SheetHeader>
 
         {cart ? (
+          <>
           <div className='flex justify-between items-center'>
             <Link className='font-bold text-2xl' href={`/restaurant/${cart.restaurant_id}`}>{cart.restaurantName}</Link>
             <TooltipProvider>
@@ -50,6 +51,45 @@ export default function CartSheet({cart, count}: CartSheetProps) {
               </Tooltip>
             </TooltipProvider>
           </div>
+          <ul className="flex-1 overflow-y-auto">
+            {cart.cart_items.map((item) => (
+              <li key={item.id} className="boreder-b py-5">
+                <div className="flex items-center justify-between">
+                  <p>{item.menus?.name}</p>
+                  <div className='relative w-[72px] h-[72px]'>
+                    <Image 
+                      src="/no_image.png"
+                      alt='メニュー画像'
+                      fill
+                      sizes='72px'
+                      className='obejct-cover rounded'
+                    />  
+                  </div>
+                </div>    
+                <div className="flex items-center justify-between">
+                    <label htmlFor="quantity" className='sr-only'>
+                      数量
+                    </label>
+                    <select 
+                      name="quantity" 
+                      value={item.quantity} 
+                      id="quantity" 
+                      className='border rounded-full pr-8 pl-4 bg-muted h-9'
+                      onChange={() => {}}
+                    >
+                      <option value="0">削除する</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                    </select>
+                    <p>¥{item.menus?.price}</p>
+                </div>    
+              </li>
+            ))}
+          </ul>
+          </>
         ) : (
           <div className='flex flex-col items-center justify-center h-full gap-4'>
             <Image
@@ -63,6 +103,7 @@ export default function CartSheet({cart, count}: CartSheetProps) {
               <Button className='rounded-full'>お買い物を開始する</Button>
             </SheetClose>
           </div>
+
         )}
       </SheetContent>
     </Sheet>
