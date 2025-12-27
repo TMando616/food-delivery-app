@@ -17,6 +17,7 @@ interface CartSheetProps {
 }
 
 export default function CartSheet({cart, count}: CartSheetProps) {
+  console.log(cart)
   return (
     <Sheet>
       <SheetTrigger className="relative cursor-pointer">
@@ -58,8 +59,8 @@ export default function CartSheet({cart, count}: CartSheetProps) {
                   <p>{item.menus?.name}</p>
                   <div className='relative w-[72px] h-[72px]'>
                     <Image 
-                      src="/no_image.png"
-                      alt='メニュー画像'
+                      src={item.menus.photoUrl}
+                      alt={item.menus.name}
                       fill
                       sizes='72px'
                       className='obejct-cover rounded'

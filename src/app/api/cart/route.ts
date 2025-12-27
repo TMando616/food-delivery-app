@@ -7,6 +7,7 @@ export async function GET(request: NextRequest) {
 
     try {
         const supabase = await createClient()
+        const bucket = supabase.storage.from("menus")
 
         const {data: { user }, error: userError} = await supabase.auth.getUser()
         if(userError || !user) {
@@ -45,6 +46,17 @@ export async function GET(request: NextRequest) {
 
             return {
                 ...cart,
+                cart_items: cart.cart_items.map((item) => {
+                    const { image_path, ...restMenus } = item.menus
+                    const publicUrl = bucket.getPublicUrl(item.menus.image_path).data.publicUrl
+                    return {
+                        ...item,
+                        menus: {
+                            ...restMenus,
+                            photoUrl: publicUrl
+                        }
+                    }
+                }),
                 restaurantName: restaurantData.displayName,
                 photoUrl: restaurantData.photoUrl,
             }

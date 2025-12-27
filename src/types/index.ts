@@ -123,6 +123,7 @@ export interface CartItem {
         id: number;
         name: string;
         price: number;
-        image_path: string;
-    } | null
+        // image_path: string;
+        photoUrl: string;
+    }
 }
