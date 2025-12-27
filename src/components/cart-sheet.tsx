@@ -1,4 +1,4 @@
-import { Cart } from '@/types'
+import { Cart, CartItem } from '@/types'
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet'
 import { ShoppingCart, Trash2 } from 'lucide-react'
 import Image from 'next/image'
@@ -17,7 +17,8 @@ interface CartSheetProps {
 }
 
 export default function CartSheet({cart, count}: CartSheetProps) {
-  console.log(cart)
+  const calculateItemTotal = (item: CartItem) => 
+    item.quantity * item.menus.price
   return (
     <Sheet>
       <SheetTrigger className="relative cursor-pointer">
@@ -85,7 +86,7 @@ export default function CartSheet({cart, count}: CartSheetProps) {
                       <option value="4">4</option>
                       <option value="5">5</option>
                     </select>
-                    <p>¥{item.menus?.price}</p>
+                    <p>¥{calculateItemTotal(item).toLocaleString()}</p>
                 </div>    
               </li>
             ))}
