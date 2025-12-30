@@ -1,6 +1,6 @@
 import { Cart } from "@/types";
 
-export function computeCartDisplayLogic(carts: Cart[] | undefined) {
+export function computeCartDisplayLogic(carts: Cart[] | undefined, selectedCart: Cart | null) {
     // カート無し
     if(!carts || carts.length === 0) {
         return {displayMode: "cartSheet", sheetCart: null, cartCount: 0}
@@ -13,6 +13,15 @@ export function computeCartDisplayLogic(carts: Cart[] | undefined) {
             displayMode: "cartSheet", 
             sheetCart: only, 
             cartCount: sumItems(only)
+        }
+    }
+
+    // 選択されたカートがある場合
+    if(selectedCart) {
+        return {
+            displayMode: "cartSheet", 
+            sheetCart: selectedCart, 
+            cartCount: sumItems(selectedCart)
         }
     }
 

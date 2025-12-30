@@ -4,8 +4,11 @@ import { useCart } from "@/hooks/cart/useCart"
 import { computeCartDisplayLogic } from "@/lib/cart/utils"
 import CartSheet from "./cart-sheet"
 import CartDropDown from "./cart-drop-down"
+import { useState } from "react"
+import type { Cart } from "@/types"
 
 export default function Cart() {
+    const [ selectedCart, setSelectedCart ] = useState<Cart | null>(null)
     const { carts, isLoading, cartsError } = useCart()
     console.log(carts)
 
@@ -13,7 +16,7 @@ export default function Cart() {
         displayMode, 
         sheetCart, 
         cartCount 
-    } = computeCartDisplayLogic(carts)
+    } = computeCartDisplayLogic(carts, selectedCart)
 
     if(cartsError) {
         return <div>{cartsError.message}</div>
@@ -25,6 +28,6 @@ export default function Cart() {
     return displayMode === "cartSheet" ? (
         <CartSheet cart={sheetCart} count={cartCount}/>
     ) : (
-        <CartDropDown carts={carts}/>
+        <CartDropDown carts={carts} setSelectedCart={setSelectedCart}/>
     )
 }

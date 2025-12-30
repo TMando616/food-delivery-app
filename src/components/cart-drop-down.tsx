@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from './ui/dropdown-menu'
 import { ShoppingCart } from 'lucide-react'
 import Image from 'next/image'
@@ -6,9 +6,10 @@ import { Cart, CartItem } from '@/types'
 
 interface CartDropDownProps {
   carts: Cart[],
+  setSelectedCart: Dispatch<SetStateAction<Cart | null>>
 }
 
-export default function CartDropDown({carts}: CartDropDownProps) {
+export default function CartDropDown({carts, setSelectedCart}: CartDropDownProps) {
   const calculateItemTotal = (item: CartItem) => 
     item.quantity * item.menus.price
 
@@ -30,7 +31,11 @@ export default function CartDropDown({carts}: CartDropDownProps) {
 
         <DropdownMenuContent className='w-[420px]'>
           {carts.map((cart) => (
-            <DropdownMenuItem key={cart.id} className='flex items-center p-4 justify-between'>
+            <DropdownMenuItem 
+              key={cart.id} 
+              className='flex items-center p-4 justify-between'
+              onClick={() => setSelectedCart(cart)}
+            >
               <div className='flex gap-3 flex-1 min-w-0'>
                 <div className='w-[64px] h-[64px] relative overflow-hidden rounded-full flex-none'>
                   <Image 
