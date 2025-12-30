@@ -14,16 +14,17 @@ import { TooltipProvider } from '@radix-ui/react-tooltip'
 interface CartSheetProps {
   cart: Cart | null,
   count: number,
+  isOpen: boolean,
 }
 
-export default function CartSheet({cart, count}: CartSheetProps) {
+export default function CartSheet({cart, count, isOpen}: CartSheetProps) {
   const calculateItemTotal = (item: CartItem) => 
     item.quantity * item.menus.price
 
   const calculateSubTotal = (cartItem: CartItem[]) => 
     cartItem.reduce((sum, item) => sum + calculateItemTotal(item), 0)
   return (
-    <Sheet>
+    <Sheet open={isOpen}>
       <SheetTrigger className="relative cursor-pointer">
         <ShoppingCart />
         <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-green-700 rounded-full size-4 text-xs text-primary-foreground flex items-center justify-center">

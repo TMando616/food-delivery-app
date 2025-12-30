@@ -6,10 +6,11 @@ import { Cart, CartItem } from '@/types'
 
 interface CartDropDownProps {
   carts: Cart[],
-  setSelectedCart: Dispatch<SetStateAction<Cart | null>>
+  setSelectedCart: Dispatch<SetStateAction<Cart | null>>,
+  openCart: () => void,
 }
 
-export default function CartDropDown({carts, setSelectedCart}: CartDropDownProps) {
+export default function CartDropDown({carts, setSelectedCart, openCart}: CartDropDownProps) {
   const calculateItemTotal = (item: CartItem) => 
     item.quantity * item.menus.price
 
@@ -34,7 +35,10 @@ export default function CartDropDown({carts, setSelectedCart}: CartDropDownProps
             <DropdownMenuItem 
               key={cart.id} 
               className='flex items-center p-4 justify-between'
-              onClick={() => setSelectedCart(cart)}
+              onClick={() => {
+                setSelectedCart(cart)
+                openCart()
+              }}
             >
               <div className='flex gap-3 flex-1 min-w-0'>
                 <div className='w-[64px] h-[64px] relative overflow-hidden rounded-full flex-none'>

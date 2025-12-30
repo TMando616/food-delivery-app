@@ -6,9 +6,11 @@ import CartSheet from "./cart-sheet"
 import CartDropDown from "./cart-drop-down"
 import { useState } from "react"
 import type { Cart } from "@/types"
+import { useCartVisibility } from "@/app/context/cartContext"
 
 export default function Cart() {
     const [ selectedCart, setSelectedCart ] = useState<Cart | null>(null)
+    const {isOpen, openCart, closeCart } = useCartVisibility()
     const { carts, isLoading, cartsError } = useCart()
     console.log(carts)
 
@@ -26,8 +28,8 @@ export default function Cart() {
     }
 
     return displayMode === "cartSheet" ? (
-        <CartSheet cart={sheetCart} count={cartCount}/>
+        <CartSheet cart={sheetCart} count={cartCount} isOpen={isOpen}/>
     ) : (
-        <CartDropDown carts={carts} setSelectedCart={setSelectedCart}/>
+        <CartDropDown carts={carts} setSelectedCart={setSelectedCart} openCart={openCart}/>
     )
 }
