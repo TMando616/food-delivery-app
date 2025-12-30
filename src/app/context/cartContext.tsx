@@ -1,11 +1,10 @@
 "use client"
-import { Menu } from "@/types";
 import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react";
 
 interface CartContextType {
     isOpen: boolean,
     setIsOpen:  Dispatch<SetStateAction<boolean>>
-    openCart: (menu: Menu) => void,
+    openCart: () => void,
     closeCart: () => void,
 }
 const CartContext = createContext<CartContextType | undefined>(undefined)
