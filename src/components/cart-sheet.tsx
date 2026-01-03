@@ -45,7 +45,14 @@ export default function CartSheet({cart, count, isOpen, closeCart, openCart}: Ca
         {cart ? (
           <>
           <div className='flex justify-between items-center'>
-            <Link className='font-bold text-2xl' href={`/restaurant/${cart.restaurant_id}`}>{cart.restaurantName}</Link>
+            <SheetClose asChild>
+              <Link 
+                className='font-bold text-2xl' 
+                href={`/restaurant/${cart.restaurant_id}`}
+              >
+                {cart.restaurantName}
+              </Link>
+            </SheetClose>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
