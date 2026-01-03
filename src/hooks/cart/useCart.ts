@@ -1,7 +1,7 @@
 import { Cart } from "@/types"
 import useSWR from "swr"
 
-export function useCart() {
+export function useCart(restaurantId?: string ) {
 
     const fetcher = async (url:string) => {
         const response = await fetch(url)
@@ -22,6 +22,8 @@ export function useCart() {
         isLoading, 
         mutate: mutateCart 
     } = useSWR<Cart[]>(`/api/cart`, fetcher)
+
+    const targetCart = carts?.find((cart) => cart.restaurant_id === restaurantId)
 
     return { carts, cartsError, isLoading, mutateCart}
 }

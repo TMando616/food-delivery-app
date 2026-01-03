@@ -7,11 +7,13 @@ import CartDropDown from "./cart-drop-down"
 import { useEffect, useState } from "react"
 import type { Cart } from "@/types"
 import { useCartVisibility } from "@/app/context/cartContext"
+import { useParams } from "next/navigation"
 
 export default function Cart() {
     const [ selectedCart, setSelectedCart ] = useState<Cart | null>(null)
     const {isOpen, openCart, closeCart } = useCartVisibility()
-    const { carts, isLoading, cartsError } = useCart()
+    const { restaurantId } = useParams<{restaurantId?: string}>()
+    const { carts, isLoading, cartsError } = useCart(restaurantId)
     console.log(carts)
 
     const { 
