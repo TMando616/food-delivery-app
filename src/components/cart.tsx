@@ -13,14 +13,14 @@ export default function Cart() {
     const [ selectedCart, setSelectedCart ] = useState<Cart | null>(null)
     const {isOpen, openCart, closeCart } = useCartVisibility()
     const { restaurantId } = useParams<{restaurantId?: string}>()
-    const { carts, isLoading, cartsError } = useCart(restaurantId)
+    const { carts, isLoading, cartsError , targetCart} = useCart(restaurantId)
     console.log(carts)
 
     const { 
         displayMode, 
         sheetCart, 
         cartCount 
-    } = computeCartDisplayLogic(carts, selectedCart)
+    } = computeCartDisplayLogic(carts, selectedCart, targetCart)
 
     useEffect(() => {
         if(isOpen) return

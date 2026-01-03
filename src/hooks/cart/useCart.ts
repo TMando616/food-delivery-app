@@ -27,5 +27,5 @@ export function useCart(restaurantId?: string ) {
         ? carts?.find((cart) => cart.restaurant_id === restaurantId) ?? null 
         : null
     
-    return { carts, cartsError, isLoading, mutateCart}
+    return { carts, cartsError, isLoading, mutateCart, targetCart}
 }
