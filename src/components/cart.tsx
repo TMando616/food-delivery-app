@@ -28,7 +28,7 @@ export default function Cart() {
     }
 
     return displayMode === "cartSheet" ? (
-        <CartSheet cart={sheetCart} count={cartCount} isOpen={isOpen}/>
+        <CartSheet cart={sheetCart} count={cartCount} isOpen={isOpen} closeCart={closeCart} openCart={openCart}/>
     ) : (
         <CartDropDown carts={carts} setSelectedCart={setSelectedCart} openCart={openCart}/>
     )
