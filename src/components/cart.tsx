@@ -4,7 +4,7 @@ import { useCart } from "@/hooks/cart/useCart"
 import { computeCartDisplayLogic } from "@/lib/cart/utils"
 import CartSheet from "./cart-sheet"
 import CartDropDown from "./cart-drop-down"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import type { Cart } from "@/types"
 import { useCartVisibility } from "@/app/context/cartContext"
 
@@ -19,6 +19,13 @@ export default function Cart() {
         sheetCart, 
         cartCount 
     } = computeCartDisplayLogic(carts, selectedCart)
+
+    useEffect(() => {
+        if(isOpen) return
+        setTimeout(() => 
+            setSelectedCart(null)
+        ,200)
+    }, [isOpen])
 
     if(cartsError) {
         return <div>{cartsError.message}</div>
