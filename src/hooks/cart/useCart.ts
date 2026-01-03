@@ -23,7 +23,9 @@ export function useCart(restaurantId?: string ) {
         mutate: mutateCart 
     } = useSWR<Cart[]>(`/api/cart`, fetcher)
 
-    const targetCart = carts?.find((cart) => cart.restaurant_id === restaurantId)
-
+    const targetCart = restaurantId 
+        ? carts?.find((cart) => cart.restaurant_id === restaurantId) ?? null 
+        : null
+    
     return { carts, cartsError, isLoading, mutateCart}
 }
