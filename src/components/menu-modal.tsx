@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog"
 import Image from "next/image"
 import { Button } from "./ui/button"
-import { Menu } from "@/types"
+import { Cart, Menu } from "@/types"
 import { useState } from "react"
 import { addToCartAction } from "@/app/(private)/actions/cartActions"
 
@@ -20,9 +20,10 @@ interface MenuModalProps {
     selectedItem: Menu | null,
     restaurantId: string,
     openCart: () => void,
+    targetCart: Cart | null,
 }
 
-export default function MenuModal({isOpen, closeModal, selectedItem, restaurantId, openCart}: MenuModalProps) {
+export default function MenuModal({isOpen, closeModal, selectedItem, restaurantId, openCart, targetCart}: MenuModalProps) {
     const [ quantity, setQuantity ] = useState(1)
     const handleAddToCart = async () => {
         if(!selectedItem) return
