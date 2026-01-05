@@ -11,7 +11,7 @@ import {
 import Image from "next/image"
 import { Button } from "./ui/button"
 import { Cart, Menu } from "@/types"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { addToCartAction } from "@/app/(private)/actions/cartActions"
 
 interface MenuModalProps {
@@ -25,11 +25,24 @@ interface MenuModalProps {
 
 export default function MenuModal({isOpen, closeModal, selectedItem, restaurantId, openCart, targetCart}: MenuModalProps) {
     const [ quantity, setQuantity ] = useState(1)
+
+    const existingCartItem = targetCart 
+        ? targetCart?.cart_items.find(
+                (item) => item.menus.id === selectedItem?.id
+            ) ?? null 
+        : null
+
+    useEffect(() => {
+        if(!selectedItem) return
+        setQuantity(existingCartItem?.quantity ?? 1)
+    }, [selectedItem, existingCartItem])
+
     const handleAddToCart = async () => {
         if(!selectedItem) return
         try {
             await addToCartAction(selectedItem, quantity, restaurantId)
             openCart()
+            closeModal()
         } catch (error) {
             console.error(error)
             alert("エラーが発生しました。")
@@ -83,16 +96,15 @@ export default function MenuModal({isOpen, closeModal, selectedItem, restaurantI
                                     </select>
                                 </div>
 
-                                <DialogClose asChild>
-                                    <Button
-                                        onClick={handleAddToCart}
-                                        type="button"
-                                        size="lg"
-                                        className="mt-6 h-14 text-lg font-semibold"
-                                    >
-                                        商品を追加（￥{selectedItem.price * quantity}）
-                                    </Button>
-                                </DialogClose>
+                                <Button
+                                    onClick={handleAddToCart}
+                                    type="button"
+                                    size="lg"
+                                    className="mt-6 h-14 text-lg font-semibold"
+                                >
+                                    {existingCartItem ? "商品を更新" : "商品を追加"}
+                                    （￥{selectedItem.price * quantity}）
+                                </Button>
                             </div>
                         </div>
                     </>
