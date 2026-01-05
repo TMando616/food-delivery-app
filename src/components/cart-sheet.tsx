@@ -25,6 +25,12 @@ export default function CartSheet({cart, count, isOpen, closeCart, openCart}: Ca
 
   const calculateSubTotal = (cartItem: CartItem[]) => 
     cartItem.reduce((sum, item) => sum + calculateItemTotal(item), 0)
+
+  const handleUpdateCartItem = (value: string, cartItemId: number) => {
+    console.log(value)
+    console.log(cartItemId)
+  }
+
   return (
     <Sheet open={isOpen} onOpenChange={(open) => open ? openCart() : closeCart()}>
       <SheetTrigger className="relative cursor-pointer">
@@ -90,7 +96,7 @@ export default function CartSheet({cart, count, isOpen, closeCart, openCart}: Ca
                       value={item.quantity} 
                       id="quantity" 
                       className='border rounded-full pr-8 pl-4 bg-muted h-9'
-                      onChange={() => {}}
+                      onChange={(e) => handleUpdateCartItem(e.target.value, item.id)}
                     >
                       <option value="0">削除する</option>
                       <option value="1">1</option>
