@@ -99,6 +99,32 @@ export async function updateCartItemAction(quantity: number, cartItemId: number,
             throw new Error("カートの取得に失敗しました")
         }
 
+        // カート自体を削除
+        if( count === 1) {
+            const { error: deleteCartError } = await supabase
+                .from("carts")
+                .delete()
+                .match({ user_id: user.id, id: cartId })
+
+            if(deleteCartError) {
+                console.error("カートの削除に失敗しました", deleteCartError)
+                throw new Error("カートの削除に失敗しました")
+            }
+
+            return 
+        }
+
+        const { error: deleteitemError} = await supabase
+            .from("cart_items")
+            .delete()
+            .eq("id", cartItemId)
+
+        if(deleteitemError) {
+            console.error("カートアイテムの削除に失敗しました", deleteitemError)
+            throw new Error("カートアイテムの削除に失敗しました")
+        }
+
+        return
     } else {
         // 数量更新
     }
