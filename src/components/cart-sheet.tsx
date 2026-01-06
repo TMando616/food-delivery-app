@@ -10,6 +10,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { TooltipProvider } from '@radix-ui/react-tooltip'
+import { updateCartItemAction } from '@/app/(private)/actions/cartActions'
 
 interface CartSheetProps {
   cart: Cart | null,
@@ -26,9 +27,18 @@ export default function CartSheet({cart, count, isOpen, closeCart, openCart}: Ca
   const calculateSubTotal = (cartItem: CartItem[]) => 
     cartItem.reduce((sum, item) => sum + calculateItemTotal(item), 0)
 
-  const handleUpdateCartItem = (value: string, cartItemId: number) => {
-    console.log(value)
-    console.log(cartItemId)
+  const handleUpdateCartItem = async (value: string, cartItemId: number) => {
+
+    if(!cart) return
+
+    const quantity = Number(value)
+
+    try {
+      await updateCartItemAction(quantity, cartItemId, cart.id)
+    } catch(error) {
+      console.error(error)
+      alert("エラーが発生しました")
+    }
   }
 
   return (
