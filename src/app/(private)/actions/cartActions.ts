@@ -76,4 +76,31 @@ export async function addToCartAction(selectedItem: Menu, quantity: number, rest
 
 export async function updateCartItemAction(quantity: number, cartItemId: number, cartId: number) {
 
+    const supabase = await createClient()
+
+    const {
+        data: {user},
+        error: userError,
+    } = await supabase.auth.getUser()
+
+    if(userError || !user) {
+        redirect("/login")
+    }
+
+    if(quantity === 0) {
+        // 削除処理
+        const { count, error } = await supabase
+            .from("cart_items")
+            .select("*", {count: "exact", head: true})
+            .eq("cart_id", cartId)
+        
+        if (error) {
+            console.error("カートの取得に失敗しました", error)
+            throw new Error("カートの取得に失敗しました")
+        }
+
+    } else {
+        // 数量更新
+    }
+
 }
