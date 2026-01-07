@@ -49,11 +49,21 @@ export default function MenuModal({isOpen, closeModal, selectedItem, restaurantI
                     // カートを新規作成
                 }
 
+                if (!targetCart) return
+                const cart = { ...targetCart }
+
                 if (existingCartItem) {
                     // 数量を更新
+                    cart.cart_items = cart.cart_items.map((item) => 
+                        item.id === existingCartItem.id 
+                            ? { ...item, quantity: quantity}
+                            : item
+                    )
                 } else {
                     // アイテムを追加
                 }
+
+                return prevCarts.map((c) => c.id === cart.id ? cart : c )
             }, false)
             openCart()
             closeModal()
