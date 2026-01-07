@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog"
 import Image from "next/image"
 import { Button } from "./ui/button"
-import { Cart, Menu } from "@/types"
+import { Cart, CartItem, Menu } from "@/types"
 import { useEffect, useState } from "react"
 import { addToCartAction } from "@/app/(private)/actions/cartActions"
 import { KeyedMutator } from "swr"
@@ -42,7 +42,7 @@ export default function MenuModal({isOpen, closeModal, selectedItem, restaurantI
     const handleAddToCart = async () => {
         if(!selectedItem) return
         try {
-            await addToCartAction(selectedItem, quantity, restaurantId)
+            const response = await addToCartAction(selectedItem, quantity, restaurantId)
             mutateCart((prevCarts: Cart[] | undefined) => {
                 if (!prevCarts) return
                 if (!targetCart) {
@@ -61,6 +61,17 @@ export default function MenuModal({isOpen, closeModal, selectedItem, restaurantI
                     )
                 } else {
                     // アイテムを追加
+                    const newCartItem: CartItem = {
+                        id: response?.id!,
+                        menus: {
+                            id: selectedItem.id,
+                            name: selectedItem.name,
+                            price: selectedItem.price,
+                            photoUrl: selectedItem.photoUrl,
+                        },
+                        quantity: quantity,
+                    }
+                    cart.cart_items = [...cart.cart_items, newCartItem]
                 }
 
                 return prevCarts.map((c) => c.id === cart.id ? cart : c )
