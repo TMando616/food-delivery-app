@@ -23,6 +23,12 @@ export default function Cart() {
     } = computeCartDisplayLogic(carts, selectedCart, targetCart)
 
     useEffect(() => {
+        if(!carts || !selectedCart) return
+        const updatedCart = carts.find((cart) => cart.id === selectedCart.id) ?? null 
+        setSelectedCart(updatedCart)
+    }, [carts])
+    
+    useEffect(() => {
         if(isOpen) return
         setTimeout(() => 
             setSelectedCart(null)
