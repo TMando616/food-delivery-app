@@ -21,7 +21,7 @@ interface MenuContentProps {
 export default function MenuContent({categoryMenus, restaurantId}:MenuContentProps ) {
 
     const { isOpen, setIsOpen, openModal, closeModal, selectedItem } = useModal()
-    const { targetCart } = useCart(restaurantId)
+    const { targetCart, mutateCart } = useCart(restaurantId)
     const { openCart } = useCartVisibility()
 
     const [activeCategoryId , setActiveCategoryId] = useState(categoryMenus[0].id)
@@ -75,6 +75,7 @@ export default function MenuContent({categoryMenus, restaurantId}:MenuContentPro
                 restaurantId={restaurantId}
                 openCart={openCart}
                 targetCart={targetCart}
+                mutateCart={mutateCart}
             />
         </div>
     )

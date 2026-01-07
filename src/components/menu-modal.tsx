@@ -13,6 +13,7 @@ import { Button } from "./ui/button"
 import { Cart, Menu } from "@/types"
 import { useEffect, useState } from "react"
 import { addToCartAction } from "@/app/(private)/actions/cartActions"
+import { KeyedMutator } from "swr"
 
 interface MenuModalProps {
     isOpen: boolean,
@@ -21,9 +22,10 @@ interface MenuModalProps {
     restaurantId: string,
     openCart: () => void,
     targetCart: Cart | null,
+    mutateCart: KeyedMutator<Cart[]>,
 }
 
-export default function MenuModal({isOpen, closeModal, selectedItem, restaurantId, openCart, targetCart}: MenuModalProps) {
+export default function MenuModal({isOpen, closeModal, selectedItem, restaurantId, openCart, targetCart, mutateCart}: MenuModalProps) {
     const [ quantity, setQuantity ] = useState(1)
 
     const existingCartItem = targetCart 
@@ -41,6 +43,7 @@ export default function MenuModal({isOpen, closeModal, selectedItem, restaurantI
         if(!selectedItem) return
         try {
             await addToCartAction(selectedItem, quantity, restaurantId)
+            mutateCart()
             openCart()
             closeModal()
         } catch (error) {

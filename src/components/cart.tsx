@@ -14,7 +14,6 @@ export default function Cart() {
     const {isOpen, openCart, closeCart } = useCartVisibility()
     const { restaurantId } = useParams<{restaurantId?: string}>()
     const { carts, isLoading, cartsError , targetCart} = useCart(restaurantId)
-    console.log(carts)
 
     const { 
         displayMode, 
