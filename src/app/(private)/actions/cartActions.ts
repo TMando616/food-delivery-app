@@ -127,6 +127,17 @@ export async function updateCartItemAction(quantity: number, cartItemId: number,
         return
     } else {
         // 数量更新
+        const { error: updateError} = await supabase
+            .from("cart_items")
+            .update({
+                quantity: quantity,
+            })
+            .eq("id", cartItemId)
+
+        if(updateError) {
+            console.error("カートアイテムの更新に失敗しました", updateError)
+            throw new Error("カートアイテムの更新に失敗しました")
+        }
     }
 
 }
