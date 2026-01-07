@@ -43,7 +43,18 @@ export default function MenuModal({isOpen, closeModal, selectedItem, restaurantI
         if(!selectedItem) return
         try {
             await addToCartAction(selectedItem, quantity, restaurantId)
-            mutateCart()
+            mutateCart((prevCarts: Cart[] | undefined) => {
+                if (!prevCarts) return
+                if (!targetCart) {
+                    // カートを新規作成
+                }
+
+                if (existingCartItem) {
+                    // 数量を更新
+                } else {
+                    // アイテムを追加
+                }
+            }, false)
             openCart()
             closeModal()
         } catch (error) {
