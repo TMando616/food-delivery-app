@@ -45,8 +45,10 @@ export default function MenuModal({isOpen, closeModal, selectedItem, restaurantI
             const response = await addToCartAction(selectedItem, quantity, restaurantId)
             mutateCart((prevCarts: Cart[] | undefined) => {
                 if (!prevCarts) return
-                if (!targetCart) {
+                if (response.type === "new") {
+                    const { cart } = response
                     // カートを新規作成
+                    return [...prevCarts, cart]
                 }
 
                 if (!targetCart) return
@@ -62,7 +64,7 @@ export default function MenuModal({isOpen, closeModal, selectedItem, restaurantI
                 } else {
                     // アイテムを追加
                     const newCartItem: CartItem = {
-                        id: response?.id!,
+                        id: response?.id,
                         menus: {
                             id: selectedItem.id,
                             name: selectedItem.name,

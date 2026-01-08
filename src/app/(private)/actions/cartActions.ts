@@ -1,11 +1,15 @@
 "use server"
 
-import { Menu } from "@/types";
+import { getPlaceDetails } from "@/lib/restaurants/api";
+import { Cart, Menu } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
-export async function addToCartAction(selectedItem: Menu, quantity: number, restaurantId: string) {
+type addToCartActionResonse = { type: "new", cart: Cart } | {type: "update", id: number}
+
+export async function addToCartAction(selectedItem: Menu, quantity: number, restaurantId: string):Promise<addToCartActionResonse>{
     const supabase = await createClient()
+    const bucket = supabase.storage.from("menus")
 
     const {data: {user}, error: userError } = await supabase.auth.getUser()
     
@@ -56,7 +60,54 @@ export async function addToCartAction(selectedItem: Menu, quantity: number, rest
             throw new Error("カートアイテムの追加に失敗しました。")
         }
 
-        return
+        const { data: insertedCarts, error: insertedCartsError } = await supabase
+            .from('carts')
+            .select(`
+                id,
+                restaurant_id,
+                cart_items (
+                    id,
+                    quantity,
+                    menus (
+                        id,
+                        name,
+                        price,
+                        image_path
+                    )
+                )
+            `)
+            .match({"user_id": user.id, id: newCartId })
+            .single()
+        
+        if(insertedCartsError) {
+            console.error("カートデータの取得に失敗しました。", insertedCartsError)
+            throw new Error(`カートデータの取得に失敗しました。 ${insertedCartsError} `)
+        }
+            
+        const { data:restaurantData, error } = await getPlaceDetails(restaurantId, ["displayName","photos"])
+
+        if(error || !restaurantData) {
+            throw new Error(`レストランデータの取得に失敗しました。${error}`)
+        }
+
+        const updatedCart = {
+            ...insertedCarts,
+            cart_items: insertedCarts.cart_items.map((item) => {
+                const { image_path, ...restMenus } = item.menus!
+                const publicUrl = bucket.getPublicUrl(item.menus!.image_path).data.publicUrl
+                return {
+                    ...item,
+                    menus: {
+                        ...restMenus,
+                        photoUrl: publicUrl
+                    }
+                }
+            }),
+            restaurantName: restaurantData.displayName,
+            photoUrl: restaurantData.photoUrl,
+        }
+
+        return { type: "new", cart: updatedCart }
     }
 
     // 既存のカートが存在する場合、アイテムを追加or数量を変更

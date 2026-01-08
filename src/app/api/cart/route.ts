@@ -48,8 +48,8 @@ export async function GET(request: NextRequest) {
             return {
                 ...cart,
                 cart_items: cart.cart_items.map((item) => {
-                    const { image_path, ...restMenus } = item.menus
-                    const publicUrl = bucket.getPublicUrl(item.menus.image_path).data.publicUrl
+                    const { image_path, ...restMenus } = item.menus!
+                    const publicUrl = bucket.getPublicUrl(item.menus!.image_path).data.publicUrl
                     return {
                         ...item,
                         menus: {
