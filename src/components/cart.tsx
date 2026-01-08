@@ -13,7 +13,7 @@ export default function Cart() {
     const [ selectedCart, setSelectedCart ] = useState<Cart | null>(null)
     const {isOpen, openCart, closeCart } = useCartVisibility()
     const { restaurantId } = useParams<{restaurantId?: string}>()
-    const { carts, isLoading, cartsError , targetCart} = useCart(restaurantId)
+    const { carts, isLoading, cartsError , targetCart, mutateCart} = useCart(restaurantId)
 
     const { 
         displayMode, 
@@ -42,7 +42,7 @@ export default function Cart() {
     }
 
     return displayMode === "cartSheet" ? (
-        <CartSheet cart={sheetCart} count={cartCount} isOpen={isOpen} closeCart={closeCart} openCart={openCart}/>
+        <CartSheet cart={sheetCart} count={cartCount} isOpen={isOpen} closeCart={closeCart} openCart={openCart} mutateCart={mutateCart} />
     ) : (
         <CartDropDown carts={carts} setSelectedCart={setSelectedCart} openCart={openCart}/>
     )

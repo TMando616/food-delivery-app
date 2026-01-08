@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/tooltip"
 import { TooltipProvider } from '@radix-ui/react-tooltip'
 import { updateCartItemAction } from '@/app/(private)/actions/cartActions'
+import { KeyedMutator } from 'swr'
 
 interface CartSheetProps {
   cart: Cart | null,
@@ -18,9 +19,10 @@ interface CartSheetProps {
   isOpen: boolean,
   closeCart: () => void,
   openCart: () => void,
+  mutateCart: KeyedMutator<Cart[]>,
 }
 
-export default function CartSheet({cart, count, isOpen, closeCart, openCart}: CartSheetProps) {
+export default function CartSheet({cart, count, isOpen, closeCart, openCart, mutateCart}: CartSheetProps) {
   const calculateItemTotal = (item: CartItem) => 
     item.quantity * item.menus.price
 
@@ -35,6 +37,17 @@ export default function CartSheet({cart, count, isOpen, closeCart, openCart}: Ca
 
     try {
       await updateCartItemAction(quantity, cartItemId, cart.id)
+      mutateCart((prevCart) => {
+        if(!prevCart) return
+        if(quantity === 0) {
+          // 削除処理
+          if(cart.cart_items.length === 1) {
+            // カート自体を削除
+          }
+          // カート内のアイテムを削除
+        }
+        // 数量更新
+      }, false)
     } catch(error) {
       console.error(error)
       alert("エラーが発生しました")
