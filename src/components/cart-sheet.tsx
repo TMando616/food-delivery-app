@@ -37,6 +37,8 @@ export default function CartSheet({cart, count, isOpen, closeCart, openCart, mut
 
     try {
       await updateCartItemAction(quantity, cartItemId, cart.id)
+        const copyCart = {...cart}
+
         if(quantity === 0) {
           // 削除処理
           if(cart.cart_items.length === 1) {
@@ -45,8 +47,12 @@ export default function CartSheet({cart, count, isOpen, closeCart, openCart, mut
             setTimeout(() => 
               mutateCart((prevCarts) => prevCarts?.filter((c) => c.id !== cart.id), false)          
             ,200)
+            return 
           }
+
           // カート内のアイテムを削除
+          copyCart.cart_items = copyCart.cart_items.filter((cartItem) => cartItem.id !== cartItemId)
+          mutateCart((prevCarts) => prevCarts?.map((cart) => cart.id === copyCart.id ? copyCart : cart), false)
         }
         // 数量更新
       
