@@ -37,17 +37,19 @@ export default function CartSheet({cart, count, isOpen, closeCart, openCart, mut
 
     try {
       await updateCartItemAction(quantity, cartItemId, cart.id)
-      mutateCart((prevCart) => {
-        if(!prevCart) return
         if(quantity === 0) {
           // 削除処理
           if(cart.cart_items.length === 1) {
+            closeCart()
             // カート自体を削除
+            setTimeout(() => 
+              mutateCart((prevCarts) => prevCarts?.filter((c) => c.id !== cart.id), false)          
+            ,200)
           }
           // カート内のアイテムを削除
         }
         // 数量更新
-      }, false)
+      
     } catch(error) {
       console.error(error)
       alert("エラーが発生しました")
