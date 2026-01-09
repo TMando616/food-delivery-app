@@ -53,8 +53,16 @@ export default function CartSheet({cart, count, isOpen, closeCart, openCart, mut
           // カート内のアイテムを削除
           copyCart.cart_items = copyCart.cart_items.filter((cartItem) => cartItem.id !== cartItemId)
           mutateCart((prevCarts) => prevCarts?.map((cart) => cart.id === copyCart.id ? copyCart : cart), false)
+          return
         }
         // 数量更新
+        copyCart.cart_items = copyCart.cart_items.map((item) => 
+          item.id === cartItemId
+              ? { ...item, quantity: quantity}
+              : item
+        )
+
+        mutateCart((prevCarts) => prevCarts?.map((cart) => cart.id === copyCart.id ? copyCart : cart), false)
       
     } catch(error) {
       console.error(error)
