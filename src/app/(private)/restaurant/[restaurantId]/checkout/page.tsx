@@ -1,4 +1,5 @@
 import AddressModal from '@/components/address-modal'
+import CartSummary from '@/components/cart-summary'
 import PaymentModal from '@/components/payment-modal'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Banknote, Briefcase } from 'lucide-react'
@@ -35,7 +36,7 @@ export default function CheckoutPage() {
                 </Card>
             </div>
             {/* 右側エリア */}
-            カート情報
+            <CartSummary />
         </div>
     )
 }
