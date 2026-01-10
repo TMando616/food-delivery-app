@@ -7,14 +7,23 @@ import { ChevronRight } from 'lucide-react'
 import { Button } from './ui/button'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion'
 import { useCart } from '@/hooks/cart/useCart'
+import CartSkeleton from './cart-skeleton'
 
 interface CartSummaryProps {
     restaurantId: string,
 }
 export default function CartSummary({ restaurantId }: CartSummaryProps) {
 
-    const { targetCart: cart } = useCart(restaurantId)
-    console.log(cart)
+    const { targetCart: cart, isLoading, cartsError } = useCart(restaurantId)
+
+    if(cartsError) {
+        console.error(cartsError)
+        return <div>{cartsError}</div>
+    }
+
+    if(isLoading) {
+        return <CartSkeleton />
+    }
 
     return (
         <Card className='max-w-md min-w-[420px]'>
