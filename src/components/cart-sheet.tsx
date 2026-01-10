@@ -156,7 +156,7 @@ export default function CartSheet({cart, count, isOpen, closeCart, openCart, mut
           </div>
           <SheetClose asChild>
             <Button asChild>
-              <Link href={`/checkout/${cart.restaurant_id}`}>お会計に進む</Link>
+              <Link href={`/restaurant/${cart.restaurant_id}/checkout`}>お会計に進む</Link>
             </Button>
           </SheetClose>
           </>
