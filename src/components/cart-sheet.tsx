@@ -127,13 +127,13 @@ export default function CartSheet({cart, count, isOpen, closeCart, openCart, mut
                   </div>
                 </div>    
                 <div className="flex items-center justify-between">
-                    <label htmlFor="quantity" className='sr-only'>
+                    <label htmlFor={`quantity-${item.id}`} className='sr-only'>
                       数量
                     </label>
                     <select 
                       name="quantity" 
                       value={item.quantity} 
-                      id="quantity" 
+                      id={`quantity-${item.id}`} 
                       className='border rounded-full pr-8 pl-4 bg-muted h-9'
                       onChange={(e) => handleUpdateCartItem(e.target.value, item.id)}
                     >
