@@ -1,11 +1,21 @@
+'use client'
+
 import { Card, CardContent, CardFooter, CardHeader } from './ui/card'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ChevronRight } from 'lucide-react'
 import { Button } from './ui/button'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion'
+import { useCart } from '@/hooks/cart/useCart'
 
-export default function CartSummary() {
+interface CartSummaryProps {
+    restaurantId: string,
+}
+export default function CartSummary({ restaurantId }: CartSummaryProps) {
+
+    const { targetCart: cart } = useCart(restaurantId)
+    console.log(cart)
+
     return (
         <Card className='max-w-md min-w-[420px]'>
             <CardHeader>
