@@ -7,7 +7,7 @@ import React from 'react'
 
 export default function CheckoutPage() {
     return (
-        <div className='flex gap-4 min-h-[calc(100vh-64px)] p-10'>
+        <div className='flex gap-4 p-10'>
             {/* 左側エリア */}
             <div className="max-w-3xl space-y-4 flex-1">
                 <Card>
