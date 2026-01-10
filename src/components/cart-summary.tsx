@@ -25,6 +25,10 @@ export default function CartSummary({ restaurantId }: CartSummaryProps) {
         return <CartSkeleton />
     }
 
+    if(cart === null) {
+        return <div>カートが見つかりません</div>
+    }
+
     return (
         <Card className='max-w-md min-w-[420px]'>
             <CardHeader>
