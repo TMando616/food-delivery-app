@@ -8,6 +8,7 @@ import { Button } from './ui/button'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion'
 import { useCart } from '@/hooks/cart/useCart'
 import CartSkeleton from './cart-skeleton'
+import { sumItems } from '@/lib/cart/utils'
 
 interface CartSummaryProps {
     restaurantId: string,
@@ -56,7 +57,7 @@ export default function CartSummary({ restaurantId }: CartSummaryProps) {
                 <Accordion type='single' collapsible defaultValue='item-1'>
                     <AccordionItem value='item-1'>
 
-                        <AccordionTrigger>カートの中身{"#"}個の商品</AccordionTrigger>
+                        <AccordionTrigger>カートの中身{sumItems(cart.cart_items)}個の商品</AccordionTrigger>
                         <AccordionContent className='flex items-center'>
                             <div className="flex items-center gap-4 flex-1">
                                 <div className="relative size-14 rounded-full overflow-hidden flex-none">
