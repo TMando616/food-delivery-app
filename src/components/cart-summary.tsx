@@ -8,7 +8,7 @@ import { Button } from './ui/button'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion'
 import { useCart } from '@/hooks/cart/useCart'
 import CartSkeleton from './cart-skeleton'
-import { calculateItemTotal, sumItems } from '@/lib/cart/utils'
+import { calculateItemTotal, calculateSubTotal, sumItems } from '@/lib/cart/utils'
 
 interface CartSummaryProps {
     restaurantId: string,
@@ -29,6 +29,12 @@ export default function CartSummary({ restaurantId }: CartSummaryProps) {
     if(cart === null) {
         return <div>カートが見つかりません</div>
     }
+
+    const fee = 0
+    const service = 0
+    const delivery = 0
+    const subtotal = calculateSubTotal(cart.cart_items)
+    const total = fee + service + delivery + subtotal
 
     return (
         <Card className='max-w-md min-w-[420px]'>
@@ -104,25 +110,25 @@ export default function CartSummary({ restaurantId }: CartSummaryProps) {
                     <ul className="grid gap-4">
                         <li className="flex justify-between text-muted-foreground">
                             <p>小計</p>
-                            <p>￥{1000}</p>
+                            <p>￥{subtotal}</p>
                         </li>
                         <li className="flex justify-between text-muted-foreground">
                             <p>手数料</p>
-                            <p>￥{0}</p>
+                            <p>￥{fee}</p>
                         </li>
                         <li className="flex justify-between text-muted-foreground">
                             <p>サービス</p>
-                            <p>￥{0}</p>
+                            <p>￥{service}</p>
                         </li>
                         <li className="flex justify-between text-muted-foreground">
                             <p>配達</p>
-                            <p>￥{0}</p>
+                            <p>￥{delivery}</p>
                         </li>
                     </ul>
                     <hr className="my-2" />
                     <div className="felx justify-between font-medium">
                         <p>合計</p>
-                        <p>￥{1000}</p>
+                        <p>￥{total}</p>
                     </div>
                 </div>
             </CardFooter>

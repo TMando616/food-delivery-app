@@ -45,3 +45,6 @@ export const sumItems = (cartItems: CartItem[]) =>
 
 export const calculateItemTotal = (item: CartItem) => 
     item.quantity * item.menus.price
+
+export const calculateSubTotal = (cartItems: CartItem[]) => 
+    cartItems.reduce((sum, item) => sum + calculateItemTotal(item), 0)
