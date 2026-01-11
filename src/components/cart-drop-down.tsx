@@ -3,7 +3,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { ShoppingCart } from 'lucide-react'
 import Image from 'next/image'
 import { Cart, CartItem } from '@/types'
-import { sumItems } from '@/lib/cart/utils'
+import { calculateItemTotal, sumItems } from '@/lib/cart/utils'
 
 interface CartDropDownProps {
   carts: Cart[],
@@ -12,8 +12,8 @@ interface CartDropDownProps {
 }
 
 export default function CartDropDown({carts, setSelectedCart, openCart}: CartDropDownProps) {
-  const calculateItemTotal = (item: CartItem) => 
-    item.quantity * item.menus.price
+  // const calculateItemTotal = (item: CartItem) => 
+  //   item.quantity * item.menus.price
 
   const calculateSubTotal = (cartItem: CartItem[]) =>
     cartItem.reduce((sum, item) => sum + calculateItemTotal(item), 0)

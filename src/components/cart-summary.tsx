@@ -8,7 +8,7 @@ import { Button } from './ui/button'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion'
 import { useCart } from '@/hooks/cart/useCart'
 import CartSkeleton from './cart-skeleton'
-import { sumItems } from '@/lib/cart/utils'
+import { calculateItemTotal, sumItems } from '@/lib/cart/utils'
 
 interface CartSummaryProps {
     restaurantId: string,
@@ -58,39 +58,43 @@ export default function CartSummary({ restaurantId }: CartSummaryProps) {
                     <AccordionItem value='item-1'>
 
                         <AccordionTrigger>カートの中身{sumItems(cart.cart_items)}個の商品</AccordionTrigger>
-                        <AccordionContent className='flex items-center'>
-                            <div className="flex items-center gap-4 flex-1">
-                                <div className="relative size-14 rounded-full overflow-hidden flex-none">
-                                    <Image
-                                        src={"/no_image.png"}
-                                        alt={"メニュー画像"}
-                                        fill
-                                        sizes='56px'
-                                        className='object-cover w-full h-full'
-                                    />
+                        {cart.cart_items.map((cartItem) => (
+                            <AccordionContent key={cartItem.id} className='flex items-center'>
+                                <div className="flex items-center gap-4 flex-1">
+                                    <div className="relative size-14 rounded-full overflow-hidden flex-none">
+                                        <Image
+                                            src={cartItem.menus.photoUrl ?? "/no_image.png"}
+                                            alt={cartItem.menus.name}
+                                            fill
+                                            sizes='56px'
+                                            className='object-cover w-full h-full'
+                                        />
+                                    </div>
+                                    <div>
+                                        <div className="font-bold">{cartItem.menus.name}</div>
+                                        <p className="text-muted-foreground text-sm">￥{calculateItemTotal(cartItem)}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <div className="font-bold">{"メニュー画像"}</div>
-                                    <p className="text-muted-foreground text-sm">￥{100}</p>
-                                </div>
-                            </div>
 
-                            <label htmlFor={`quantity`} className='sr-only'>
-                                数量
-                            </label>
-                            <select
-                                name="quantity" 
-                                id={`quantity`}
-                                className='border rounded-full pr-8 pl-4 bg-muted h-9'
-                            >
-                                <option value="0">削除する</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                            </select>
-                        </AccordionContent>
+                                <label htmlFor={`cart-quantity-${cartItem.id}`} className='sr-only'>
+                                    数量
+                                </label>
+                                <select
+                                    name="quantity" 
+                                    id={`cart-quantity-${cartItem.id}`}
+                                    className='border rounded-full pr-8 pl-4 bg-muted h-9'
+                                    value={cartItem.quantity}
+                                    onChange={() => {}}
+                                >
+                                    <option value="0">削除する</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </AccordionContent>
+                        ))}
                     </AccordionItem>
                 </Accordion>
             </CardContent>

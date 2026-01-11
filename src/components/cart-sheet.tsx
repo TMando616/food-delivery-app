@@ -12,6 +12,7 @@ import {
 import { TooltipProvider } from '@radix-ui/react-tooltip'
 import { updateCartItemAction } from '@/app/(private)/actions/cartActions'
 import { KeyedMutator } from 'swr'
+import { calculateItemTotal } from '@/lib/cart/utils'
 
 interface CartSheetProps {
   cart: Cart | null,
@@ -23,8 +24,8 @@ interface CartSheetProps {
 }
 
 export default function CartSheet({cart, count, isOpen, closeCart, openCart, mutateCart}: CartSheetProps) {
-  const calculateItemTotal = (item: CartItem) => 
-    item.quantity * item.menus.price
+  // const calculateItemTotal = (item: CartItem) => 
+  //   item.quantity * item.menus.price
 
   const calculateSubTotal = (cartItem: CartItem[]) => 
     cartItem.reduce((sum, item) => sum + calculateItemTotal(item), 0)

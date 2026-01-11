@@ -42,3 +42,6 @@ export function computeCartDisplayLogic(
 
 export const sumItems = (cartItems: CartItem[]) =>
     cartItems.reduce((sum, item) => sum + item.quantity, 0)
+
+export const calculateItemTotal = (item: CartItem) => 
+    item.quantity * item.menus.price
