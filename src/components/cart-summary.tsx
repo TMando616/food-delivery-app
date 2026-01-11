@@ -32,18 +32,18 @@ export default function CartSummary({ restaurantId }: CartSummaryProps) {
     return (
         <Card className='max-w-md min-w-[420px]'>
             <CardHeader>
-                <Link href={`#`} className="mb-4 flex justify-between items-center">
+                <Link href={`/restaurant/${cart.restaurant_id}`} className="mb-4 flex justify-between items-center">
                     <div className="flex items-center gap-4 flex-1">
                         <div className="relative size-12 rounded-full overflow-hidden flex-none">
                             <Image
-                                src={"/no_image.png"}
-                                alt='レストラン画像'
+                                src={cart.photoUrl ?? "/no_image.png"}
+                                alt={cart.restaurantName ?? "レストラン画像"}
                                 fill
                                 className='object-cover w-full h-full'
                                 sizes='48px'
                             />
                         </div>
-                        <div className="font-bold">{"レストラン名"}</div>
+                        <div className="font-bold">{cart.restaurantName}</div>
                     </div>
                     <ChevronRight size={16} />
                 </Link>
