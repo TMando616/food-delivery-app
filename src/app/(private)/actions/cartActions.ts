@@ -198,3 +198,7 @@ export async function updateCartItemAction(quantity: number, cartItemId: number,
     }
 
 }
+
+export async function checkoutAction(cartId: number) {
+    
+}

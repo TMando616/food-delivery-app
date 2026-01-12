@@ -9,7 +9,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './
 import { useCart } from '@/hooks/cart/useCart'
 import CartSkeleton from './cart-skeleton'
 import { calculateItemTotal, calculateSubTotal, sumItems } from '@/lib/cart/utils'
-import { updateCartItemAction } from '@/app/(private)/actions/cartActions'
+import { checkoutAction, updateCartItemAction } from '@/app/(private)/actions/cartActions'
 import { useRouter } from 'next/navigation'
 
 interface CartSummaryProps {
@@ -74,6 +74,14 @@ export default function CartSummary({ restaurantId }: CartSummaryProps) {
         }
       }
     
+    const handleCheckout = async () => {
+        try {
+            await checkoutAction(cart.id)
+        } catch (error) {
+            console.error(error)
+            alert("エラーが発生しました")
+        }
+    }
 
     return (
         <Card className='max-w-md min-w-[420px]'>
@@ -93,7 +101,7 @@ export default function CartSummary({ restaurantId }: CartSummaryProps) {
                     </div>
                     <ChevronRight size={16} />
                 </Link>
-                <Button className='cursor-pointer'>
+                <Button className='cursor-pointer' onClick={handleCheckout}>
                     本ページの内容を確認の上、注文を確定する。
                 </Button>
             </CardHeader>
