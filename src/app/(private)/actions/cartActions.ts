@@ -212,6 +212,7 @@ export async function checkoutAction(cartId: number, fee: number, service: numbe
         cart_items (
             id,
             quantity,
+            menu_id,
             menus (
                 id,
                 name,
@@ -233,7 +234,7 @@ export async function checkoutAction(cartId: number, fee: number, service: numbe
     const subtotal = cart_items.reduce((sum, item) => sum + item.quantity * item.menus!.price, 0)
     const total = fee + service + delivery + subtotal
 
-    const { error:orderError } = await supabase
+    const { data:order, error:orderError } = await supabase
         .from('orders')
         .insert({
             restaurant_id: restaurant_id,
@@ -244,13 +245,41 @@ export async function checkoutAction(cartId: number, fee: number, service: numbe
             subtotal_price: subtotal,
             total_price: total
         })
+        .select("id")
+        .single()
 
     if(orderError) {
         console.error("注文の作成に失敗しました", orderError)
         throw new Error("注文の作成に失敗しました")
     }
 
-    // order_itemsテーブルにデータを挿入
+    const orderItems = cart_items.map((item) => ({
+        quantity: item.quantity,
+        order_id: order.id,
+        menu_id: item.menu_id!,
+        price: item.menus!.price,
+        name: item.menus!.name,
+        image_path: item.menus!.image_path,
+    }))
 
+    // order_itemsテーブルにデータを挿入
+    const { error:orderItemsError } = await supabase
+        .from('order_items')
+        .insert(orderItems)
+
+    if(orderItemsError) {
+        console.error("注文アイテムの作成に失敗しました", orderItemsError)
+        throw new Error("注文アイテムの作成に失敗しました")
+    }
+    
     // カートデータを削除
+    const { error:deleteError } = await supabase
+    .from('carts')
+    .delete()
+    .eq('id', cartId)
+
+    if(deleteError) {
+        console.error("カートの削除に失敗しました", deleteError)
+        throw new Error("カートの削除に失敗しました")
+    }
 }
