@@ -77,6 +77,8 @@ export default function CartSummary({ restaurantId }: CartSummaryProps) {
     const handleCheckout = async () => {
         try {
             await checkoutAction(cart.id, fee, service, delivery)
+            mutateCart((prevCarts) => prevCarts?.filter((c) => c.id !== cart.id), false) // 注文対象以外を残し、注文対象を除外
+            push(`/restaurant/${restaurantId}/checkout/complete`)
         } catch (error) {
             console.error(error)
             alert("エラーが発生しました")
