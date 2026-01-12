@@ -9,13 +9,15 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './
 import { useCart } from '@/hooks/cart/useCart'
 import CartSkeleton from './cart-skeleton'
 import { calculateItemTotal, calculateSubTotal, sumItems } from '@/lib/cart/utils'
+import { updateCartItemAction } from '@/app/(private)/actions/cartActions'
+import { useRouter } from 'next/navigation'
 
 interface CartSummaryProps {
     restaurantId: string,
 }
 export default function CartSummary({ restaurantId }: CartSummaryProps) {
-
-    const { targetCart: cart, isLoading, cartsError } = useCart(restaurantId)
+    const { push } = useRouter()
+    const { targetCart: cart, isLoading, cartsError, mutateCart } = useCart(restaurantId)
 
     if(cartsError) {
         console.error(cartsError)
@@ -35,6 +37,43 @@ export default function CartSummary({ restaurantId }: CartSummaryProps) {
     const delivery = 0
     const subtotal = calculateSubTotal(cart.cart_items)
     const total = fee + service + delivery + subtotal
+
+    const handleUpdateCartItem = async (value: string, cartItemId: number) => {
+        const quantity = Number(value)
+    
+        try {
+          await updateCartItemAction(quantity, cartItemId, cart.id)
+            const copyCart = {...cart}
+    
+            if(quantity === 0) {
+              // 削除処理
+              if(cart.cart_items.length === 1) {
+                // カート自体を削除
+                mutateCart((prevCarts) => prevCarts?.filter((c) => c.id !== cart.id), false)          
+                push(`/restaurant/${cart.restaurant_id}`)
+                return 
+              }
+    
+              // カート内のアイテムを削除
+              copyCart.cart_items = copyCart.cart_items.filter((cartItem) => cartItem.id !== cartItemId)
+              mutateCart((prevCarts) => prevCarts?.map((cart) => cart.id === copyCart.id ? copyCart : cart), false)
+              return
+            }
+            // 数量更新
+            copyCart.cart_items = copyCart.cart_items.map((item) => 
+              item.id === cartItemId
+                  ? { ...item, quantity: quantity}
+                  : item
+            )
+    
+            mutateCart((prevCarts) => prevCarts?.map((cart) => cart.id === copyCart.id ? copyCart : cart), false)
+          
+        } catch(error) {
+          console.error(error)
+          alert("エラーが発生しました")
+        }
+      }
+    
 
     return (
         <Card className='max-w-md min-w-[420px]'>
@@ -90,7 +129,7 @@ export default function CartSummary({ restaurantId }: CartSummaryProps) {
                                     id={`cart-quantity-${cartItem.id}`}
                                     className='border rounded-full pr-8 pl-4 bg-muted h-9'
                                     value={cartItem.quantity}
-                                    onChange={() => {}}
+                                    onChange={(e) => handleUpdateCartItem(e.target.value, cartItem.id)}
                                 >
                                     <option value="0">削除する</option>
                                     <option value="1">1</option>
