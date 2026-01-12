@@ -76,7 +76,7 @@ export default function CartSummary({ restaurantId }: CartSummaryProps) {
     
     const handleCheckout = async () => {
         try {
-            await checkoutAction(cart.id)
+            await checkoutAction(cart.id, fee, service, delivery)
         } catch (error) {
             console.error(error)
             alert("エラーが発生しました")

@@ -199,6 +199,58 @@ export async function updateCartItemAction(quantity: number, cartItemId: number,
 
 }
 
-export async function checkoutAction(cartId: number) {
-    
+export async function checkoutAction(cartId: number, fee: number, service: number, delivery: number) {
+    const supabase = await createClient()
+
+    // カートデータを取得 
+    const { data:cart, error:cartsError } = await supabase
+    .from('carts')
+    .select(`
+        id,
+        user_id,
+        restaurant_id,
+        cart_items (
+            id,
+            quantity,
+            menus (
+                id,
+                name,
+                price,
+                image_path
+            )
+        )
+    `)
+    .eq("id", cartId)
+    .single()
+
+    if(cartsError) {
+        console.error("カートの取得に失敗しました", cartsError)
+        throw new Error("カートの取得に失敗しました")
+    }
+
+    // ordersテーブルにデータを挿入
+    const { restaurant_id, user_id, cart_items } = cart
+    const subtotal = cart_items.reduce((sum, item) => sum + item.quantity * item.menus!.price, 0)
+    const total = fee + service + delivery + subtotal
+
+    const { error:orderError } = await supabase
+        .from('orders')
+        .insert({
+            restaurant_id: restaurant_id,
+            user_id: user_id,
+            fee,
+            service,
+            delivery,
+            subtotal_price: subtotal,
+            total_price: total
+        })
+
+    if(orderError) {
+        console.error("注文の作成に失敗しました", orderError)
+        throw new Error("注文の作成に失敗しました")
+    }
+
+    // order_itemsテーブルにデータを挿入
+
+    // カートデータを削除
 }
