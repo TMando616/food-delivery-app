@@ -1,9 +1,11 @@
 import { createClient } from "@/utils/supabase/server"
 import { redirect } from "next/navigation"
+import { getPlaceDetails } from "../restaurants/api"
 
 export async function fetchOrders () {
 
     const supabase = await createClient()
+    const bucket = supabase.storage.from("menus")
 
     const { 
         data: { user }, 
@@ -28,9 +30,9 @@ export async function fetchOrders () {
             order_items (
                 id,
                 price,
-                quanaity,
+                quantity,
                 name,
-                image_path,
+                image_path
             )
         `)
         .eq('user_id', user.id)
@@ -39,4 +41,30 @@ export async function fetchOrders () {
         console.error('注文履歴の取得に失敗しました。', ordersError)
         throw new Error('注文履歴の取得に失敗しました。')
     }
+
+    
+    const promises = orders.map(async (order)  => {
+        const { data:restaurantData, error } = await getPlaceDetails(order.restaurant_id, ["displayName","photos"])
+
+        if(error || !restaurantData) {
+            // throw new Error(`レストランデータの取得に失敗しました。${error}`)
+            console.error(`レストランデータの取得に失敗しました。${error}`)
+        }
+
+        return {
+            ...order,
+            order_items: order.order_items.map((item) => {
+                const { image_path, ...restMenus } = item
+                const publicUrl = bucket.getPublicUrl(image_path).data.publicUrl
+                return {
+                    ...restMenus,
+                    photoUrl: publicUrl
+                }
+            }),
+            restaurantName: restaurantData?.displayName ?? "不明なお店",
+            photoUrl: restaurantData?.photoUrl ?? "/no_image.png",
+        }
+    })
+
+    const results = await Promise.all(promises)
 }
