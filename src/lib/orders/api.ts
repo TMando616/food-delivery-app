@@ -1,8 +1,9 @@
 import { createClient } from "@/utils/supabase/server"
 import { redirect } from "next/navigation"
 import { getPlaceDetails } from "../restaurants/api"
+import { Order } from "@/types"
 
-export async function fetchOrders () {
+export async function fetchOrders (): Promise<Order[]>{
 
     const supabase = await createClient()
     const bucket = supabase.storage.from("menus")
@@ -43,7 +44,7 @@ export async function fetchOrders () {
     }
 
     
-    const promises = orders.map(async (order)  => {
+    const promises = orders.map(async (order): Promise<Order>  => {
         const { data:restaurantData, error } = await getPlaceDetails(order.restaurant_id, ["displayName","photos"])
 
         if(error || !restaurantData) {
@@ -67,4 +68,5 @@ export async function fetchOrders () {
     })
 
     const results = await Promise.all(promises)
+    return results
 }
