@@ -37,7 +37,7 @@ export default function OrderCart({ order }: OrderCartProps) {
                     {order.order_items.map((item) => (
                         <div key={item.id} className='flex items-center justify-between border-b pb-4 last:border-b-0'>
                             <div className='flex itemse-center gap-4'>
-                                <div className='relative size-16 rounded-full overflow-hidden flex-none'>
+                                <div className='relative size-16 rounded-2xl overflow-hidden flex-none'>
                                     <Image 
                                         src={item.photoUrl}
                                         alt={item.name}
