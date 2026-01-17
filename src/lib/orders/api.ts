@@ -37,6 +37,7 @@ export async function fetchOrders (): Promise<Order[]>{
             )
         `)
         .eq('user_id', user.id)
+        .order("created_at", {ascending: false})
 
     if(ordersError) {
         console.error('注文履歴の取得に失敗しました。', ordersError)

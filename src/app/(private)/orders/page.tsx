@@ -4,7 +4,10 @@ import React from 'react'
 
 export default async function OrdersPage() {
     const orders = await fetchOrders()
-    console.log(orders)
+
+    if(orders.length === 0) {
+        return <div>過去の注文履歴がありません</div>
+    }
     return (
         <div className='space-y-6'>
             {orders.map((order) => (
